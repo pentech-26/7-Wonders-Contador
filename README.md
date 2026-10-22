@@ -1,2 +1,2 @@
-# 7-Wonders-Contador
+# 7 Wonders Contador
 Contador para el juego de mesa 7 Wonders
