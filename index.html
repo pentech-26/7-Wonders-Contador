@@ -79,11 +79,50 @@ tr.tot td{font-family:var(--ft);font-weight:900;font-size:18px;color:var(--gold2
 .foot{text-align:center;color:var(--mute);font-size:14px;margin-top:26px}
 .neg{color:var(--red)}
 @media (prefers-reduced-motion:no-preference){.win{animation:pop .5s ease-out}@keyframes pop{from{transform:scale(.94);opacity:0}}}
+
+/* ===== Aire clasico: Grecia, Roma y Fenicia ===== */
+:root{--key:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M0 11h2V1h12v8H6V4h4M14 9v2h2' fill='none' stroke='%23d4aa55' stroke-width='1.6'/%3E%3C/svg%3E");
+--keyd:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M0 11h2V1h12v8H6V4h4M14 9v2h2' fill='none' stroke='%235a3f0b' stroke-width='1.6'/%3E%3C/svg%3E");
+--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+--tyr1:#4d2a70;--tyr2:#33204f;--bz:#7a5a1c}
+body{background:radial-gradient(120% 60% at 50% -10%,#2b4a86 0%,transparent 60%),repeating-linear-gradient(115deg,rgba(255,255,255,.02) 0 2px,transparent 2px 11px),var(--bg)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:var(--grain)}
+.wrap{position:relative;z-index:1}
+.key{height:14px;background:var(--key) repeat-x center;margin:4px 0;opacity:.95}
+h1{background:linear-gradient(#fff3c4,#d4aa55 55%,#9a7428);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(0,0,0,.5));letter-spacing:.12em}
+h1 small{-webkit-text-fill-color:var(--mute);filter:none}
+h2{display:flex;align-items:center;gap:10px;text-transform:uppercase;letter-spacing:.1em;font-size:17px}
+h2::before{content:"\25C6";font-size:10px;color:var(--gold)}
+h2::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.panel,.cat,.exp,.rk{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.16)),var(--panel);border-color:#4a6aa3;border-radius:6px;outline:1px solid rgba(212,170,85,.35);outline-offset:-5px;box-shadow:0 3px 8px rgba(0,0,0,.35)}
+.cat,.exp{border-left-width:10px}
+.cat .hd b,.exp b{text-transform:uppercase;letter-spacing:.06em}
+.total{background:linear-gradient(180deg,var(--tyr1),var(--tyr2));border:2px solid var(--gold);border-radius:6px;box-shadow:0 3px 10px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.18)}
+.total b{text-transform:uppercase;letter-spacing:.08em}
+.total i{text-shadow:0 2px 0 rgba(0,0,0,.5)}
+.chip{border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.15)),var(--panel);border:1px solid #4a6aa3;border-bottom:3px solid var(--bz)}
+.chip.on{background:linear-gradient(#e9c872,#b98d37);border-color:#f0cf84;border-bottom-color:#5d4310}
+.chip .rn{font-family:var(--ft);font-size:12px;letter-spacing:.25em;color:var(--gold)}
+.chip.on .rn{color:#5a3f0b}
+.btn{border:2px solid var(--bz);border-radius:5px;text-transform:uppercase;letter-spacing:.1em;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 0 #5d4310,0 6px 10px rgba(0,0,0,.35)}
+.btn:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 1px 0 #5d4310}
+.btn.ghost{background:rgba(0,0,0,.15);border:2px solid var(--gold);box-shadow:none;color:var(--gold2)}
+.b{border:2px solid var(--bz);border-radius:5px;background:linear-gradient(#37558f,#233d6e);color:var(--gold2);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.b:active{background:#1a2f58}
+.win{position:relative;border:2px solid var(--bz);border-radius:6px;padding:34px 16px;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+.win::before,.win::after{content:"";position:absolute;left:10px;right:10px;height:12px;background:var(--keyd) repeat-x center}
+.win::before{top:8px}.win::after{bottom:8px}
+.win span{letter-spacing:.18em;text-transform:uppercase;font-family:var(--ft);font-size:14px}
+.rk .p{font-size:20px;width:44px;text-align:center;letter-spacing:.05em}
+.tw{border-radius:6px;border-color:#4a6aa3}
+.foot{letter-spacing:.12em}
+.foot::before{content:"";display:block;height:14px;background:var(--key) repeat-x center;margin-bottom:12px}
 </style>
 </head>
 <body>
 <div class="wrap" id="app"></div>
 <script>
+let askReset=false,askT=0;
 const KEY='sw7-contador-v1';
 const EXP={armada:{n:'Armada',c:'#e0b400',d:'Flotas, islas y conflictos navales'},cities:{n:'Cities',c:'#2e9b62',d:'Cartas negras, deuda y diplomacia'},leaders:{n:'Leaders',c:'#5fa8d3',d:'Líderes y su puntuación'},edifice:{n:'Edifice',c:'#9b59b6',d:'Edificaciones y penalizaciones'}};
 const CATS=[
@@ -124,16 +163,17 @@ function stp(k,v,neg){return `<div class="st"><button class="b" data-act="step" 
 function render(){const A=document.getElementById('app');
  if(S.screen==='setup')A.innerHTML=setup();else if(S.screen==='score')A.innerHTML=scoreView();else A.innerHTML=results();
  window.scrollTo(0,0);save()}
-const head='<h1>7 WONDERS<small>CONTADOR DE PUNTOS</small></h1>';
+const head='<div class="key"></div><h1>7 WONDERS<small>CONTADOR DE PUNTOS</small></h1><div class="key"></div>';
+const RN=['','I','II','III','IV','V','VI','VII'];
 const foot='<div class="foot">Creado por PenTech</div>';
 function setup(){const ps=P();
  return head+`<h2>Jugadores</h2><div class="panel"><div class="row"><b>Número de jugadores</b><div class="st" style="width:170px;grid-template-columns:44px 1fr 44px"><button class="b" data-act="n" data-d="-1" style="width:44px;height:44px">−</button><b style="text-align:center;font-size:22px">${S.n}</b><button class="b" data-act="n" data-d="1" style="width:44px;height:44px">+</button></div></div>
- <div class="names">${ps.map((p,i)=>`<input type="text" data-name="${i}" placeholder="Jugador ${i+1}" value="${esc(p.name)}" maxlength="18">`).join('')}</div></div>
+ <div class="names">${ps.map((p,i)=>`<input type="text" autocomplete="off" data-name="${i}" placeholder="Jugador ${i+1}" value="${esc(p.name)}" maxlength="18">`).join('')}</div></div>
  <h2>Expansiones</h2>${Object.entries(EXP).map(([k,e])=>`<label class="exp" style="border-left-color:${e.c}"><input type="checkbox" data-exp="${k}" ${S.exp[k]?'checked':''}><div><b>${e.n}</b><span>${e.d}</span></div></label>`).join('')}
  <p style="color:var(--mute);font-size:15px;margin:6px 2px 16px">El juego base siempre está incluido.</p>
  <button class="btn" data-act="start">Empezar a contar</button>${foot}`}
 function scoreView(){const ps=P();const p=ps[S.cur];
- const chips=ps.map((q,i)=>`<button class="chip ${i===S.cur?'on':''}" data-act="tab" data-i="${i}"><div class="nm">${esc(nm(q,i))}</div><div class="tt" id="ct${i}">${score(q).t}</div></button>`).join('');
+ const chips=ps.map((q,i)=>`<button class="chip ${i===S.cur?'on':''}" data-act="tab" data-i="${i}"><div class="rn">${RN[i+1]}</div><div class="nm">${esc(nm(q,i))}</div><div class="tt" id="ct${i}">${score(q).t}</div></button>`).join('');
  const rows=CATS.filter(on).map(c=>{
   let body;
   if(c.sci)body=`<div class="tri">${[['st','Tablilla'],['sc','Compás'],['sg','Engranaje']].map(([k,l])=>`<div><label>${l}</label>${stp(k,num(p,k))}</div>`).join('')}</div>`;
@@ -153,7 +193,7 @@ function results(){const r=ranking();const top=r.filter(o=>o.pos===1);
  const cats=CATS.filter(on);
  const win=top.length>1?`Empate: ${top.map(o=>esc(nm(o.p,o.i))).join(' y ')}`:esc(nm(top[0].p,top[0].i));
  return head+`<div class="win"><span>${top.length>1?'Victoria compartida':'Ganador'}</span><b>${win}</b>${top[0].s.t} puntos</div>
- ${r.map(o=>`<div class="rk"><div class="p">${o.pos}</div><div class="n">${esc(nm(o.p,o.i))}<small>${o.co} monedas</small></div><div class="t">${o.s.t}</div></div>`).join('')}
+ ${r.map(o=>`<div class="rk"><div class="p">${RN[o.pos]}</div><div class="n">${esc(nm(o.p,o.i))}<small>${o.co} monedas</small></div><div class="t">${o.s.t}</div></div>`).join('')}
  <p style="color:var(--mute);font-size:15px;margin:4px 2px 0">En caso de empate gana quien tenga más monedas; si siguen igualados, comparten la victoria.</p>
  <h2>Desglose</h2><div class="tw"><table><tr><th></th>${r.map(o=>`<th>${esc(nm(o.p,o.i))}</th>`).join('')}</tr>
  ${cats.map(c=>`<tr style="--c:${c.c}"><td>${c.l}</td>${r.map(o=>{const v=o.s.r[c.k];return `<td class="${v<0?'neg':''}">${v}</td>`}).join('')}</tr>`).join('')}
@@ -169,7 +209,9 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(
  else if(a==='results'){S.screen='results';render()}
  else if(a==='back'){S.screen='score';render();live()}
  else if(a==='settings'){S.screen='setup';render()}
- else if(a==='reset'){if(confirm('¿Empezar una partida nueva? Se borrarán todas las puntuaciones.')){S.players.forEach(p=>p.v={});S.cur=0;S.screen='setup';render()}}});
+ else if(a==='reset'){
+  if(!askReset){askReset=true;b.textContent='¿Seguro? Pulsa de nuevo para borrar';clearTimeout(askT);askT=setTimeout(()=>{askReset=false;b.textContent='Nueva partida'},4000);return}
+  clearTimeout(askT);askReset=false;S={screen:'setup',n:4,cur:0,exp:{armada:false,cities:false,leaders:false,edifice:false},players:[]};render()}});
 document.addEventListener('input',e=>{const t=e.target;
  if(t.dataset.f){const c=CATS.find(x=>x.k===t.dataset.f);let v=parseInt(t.value)||0;if(!(c&&c.neg)&&v<0){v=0;t.value=0}P()[S.cur].v[t.dataset.f]=v;save();live()}
  else if(t.dataset.name!==undefined){P()[+t.dataset.name].name=t.value;save()}});
