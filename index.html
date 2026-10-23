@@ -125,9 +125,16 @@ body{padding-top:0}
 .top h1{font-size:30px;margin:6px 0 2px}
 .top h1 small{font-size:12px;margin-top:2px}
 .top .key{height:14px;margin:4px 0}
+
+/* ===== Pantalla de inicio (splash) ===== */
+#splash{position:fixed;inset:0;z-index:9999;background:#2a47a0;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity .6s ease,visibility .6s;cursor:pointer}
+#splash.out{opacity:0;visibility:hidden;pointer-events:none}
+#splash img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+@media (prefers-reduced-motion:no-preference){#splash img{animation:spz 3.2s ease-out both}@keyframes spz{from{transform:scale(1.06)}to{transform:scale(1)}}}
 </style>
 </head>
 <body>
+<div id="splash" role="img" aria-label="7 Wonders Contador"><img src="splash.webp?v=1" alt="" decoding="async" fetchpriority="high"></div>
 <div class="wrap" id="app"></div>
 <script>
 let askReset=false,askT=0;
@@ -226,6 +233,13 @@ document.addEventListener('input',e=>{const t=e.target;
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset.exp){S.exp[t.dataset.exp]=t.checked;save()}});
 render();if(S.screen==='score')live();
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+(function(){var sp=document.getElementById('splash');if(!sp)return;var done=false,t0=Date.now(),img=sp.querySelector('img');
+function hide(){if(done)return;done=true;sp.classList.add('out');setTimeout(function(){sp.remove()},700)}
+function go(){setTimeout(hide,Math.max(0,2400-(Date.now()-t0)))}
+sp.addEventListener('click',hide);
+if(img.complete)go();else{img.addEventListener('load',go);img.addEventListener('error',hide)}
+setTimeout(hide,6000)})();
 </script>
 </body>
 </html>
