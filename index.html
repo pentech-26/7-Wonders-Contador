@@ -117,6 +117,14 @@ h2::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--go
 .tw{border-radius:6px;border-color:#4a6aa3}
 .foot{letter-spacing:.12em}
 .foot::before{content:"";display:block;height:14px;background:var(--key) repeat-x center;margin-bottom:12px}
+
+/* ===== Cabecera fija ===== */
+body{padding-top:0}
+.wrap{padding-top:0}
+.top{position:sticky;top:0;z-index:20;margin:0 -14px 12px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;background:linear-gradient(180deg,rgba(15,26,46,.98),rgba(15,26,46,.93));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-bottom:1px solid rgba(212,170,85,.35);box-shadow:0 6px 14px rgba(0,0,0,.35)}
+.top h1{font-size:30px;margin:6px 0 2px}
+.top h1 small{font-size:12px;margin-top:2px}
+.top .key{height:14px;margin:4px 0}
 </style>
 </head>
 <body>
@@ -163,7 +171,7 @@ function stp(k,v,neg){return `<div class="st"><button class="b" data-act="step" 
 function render(){const A=document.getElementById('app');
  if(S.screen==='setup')A.innerHTML=setup();else if(S.screen==='score')A.innerHTML=scoreView();else A.innerHTML=results();
  window.scrollTo(0,0);save()}
-const head='<div class="key"></div><h1>7 WONDERS<small>CONTADOR DE PUNTOS</small></h1><div class="key"></div>';
+const head='<header class="top"><div class="key"></div><h1>7 WONDERS<small>CONTADOR DE PUNTOS</small></h1><div class="key"></div></header>';
 const RN=['','I','II','III','IV','V','VI','VII'];
 const foot='<div class="foot">Creado por PenTech</div>';
 function setup(){const ps=P();
