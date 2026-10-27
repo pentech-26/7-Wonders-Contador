@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f1a2e">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png?v=3">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png?v=4">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=4">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="7 Wonders">
@@ -133,10 +133,14 @@ body{padding-top:0}
 @media (prefers-reduced-motion:no-preference){#splash img{animation:spz 3.2s ease-out both}@keyframes spz{from{transform:scale(1.06)}to{transform:scale(1)}}}
 
 .legal{max-width:520px;margin:10px auto 0;font-size:12.5px;line-height:1.45;letter-spacing:0;color:var(--mute);opacity:.85}
+
+.tap{position:absolute;left:0;right:0;bottom:calc(8% + env(safe-area-inset-bottom,0px));text-align:center;font-family:var(--ft);font-weight:700;font-size:16px;letter-spacing:.22em;text-transform:uppercase;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.65);opacity:0;pointer-events:none;transition:opacity .4s}
+.tap.show{opacity:1;animation:tapp 1.5s ease-in-out infinite}
+@keyframes tapp{50%{opacity:.4}}
 </style>
 </head>
 <body>
-<div id="splash" role="img" aria-label="7 Wonders Contador"><img src="splash.webp?v=1" alt="" decoding="async" fetchpriority="high"></div>
+<div id="splash" role="img" aria-label="7 Wonders Contador"><img src="splash.webp?v=1" alt="" decoding="async" fetchpriority="high"><div id="splashHint" class="tap">Toca para entrar</div></div>
 <div class="wrap" id="app"></div>
 <script>
 let askReset=false,askT=0;
@@ -236,12 +240,24 @@ document.addEventListener('change',e=>{const t=e.target;if(t.dataset.exp){S.exp[
 render();if(S.screen==='score')live();
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 
-(function(){var sp=document.getElementById('splash');if(!sp)return;var done=false,t0=Date.now(),img=sp.querySelector('img');
-function hide(){if(done)return;done=true;sp.classList.add('out');setTimeout(function(){sp.remove()},700)}
-function go(){setTimeout(hide,Math.max(0,2400-(Date.now()-t0)))}
-sp.addEventListener('click',hide);
-if(img.complete)go();else{img.addEventListener('load',go);img.addEventListener('error',hide)}
-setTimeout(hide,6000)})();
+(function(){var sp=document.getElementById('splash');if(!sp)return;
+var done=false,img=sp.querySelector('img'),hint=document.getElementById('splashHint');
+var au=new Audio('fanfare.mp3?v=1');au.preload='auto';
+var timer=0,waiting=false,playing=false;
+function hide(){if(done)return;done=true;clearTimeout(timer);
+ try{var v=au.volume,k=0,iv=setInterval(function(){k++;au.volume=Math.max(0,v*(1-k/8));if(k>=8){clearInterval(iv);au.pause()}},60)}catch(e){}
+ sp.classList.add('out');setTimeout(function(){sp.remove()},700)}
+function started(){playing=true;waiting=false;hint.classList.remove('show');clearTimeout(timer);
+ var d=(isFinite(au.duration)&&au.duration>0)?au.duration:4.8;timer=setTimeout(hide,Math.max(2400,d*1000-700))}
+function blocked(){waiting=true;hint.classList.add('show')}
+function go(){var p;try{p=au.play()}catch(e){}
+ if(p&&p.then){p.then(started).catch(blocked)}else{timer=setTimeout(hide,2400)}}
+sp.addEventListener('click',function(){
+ if(waiting){waiting=false;hint.classList.remove('show');var p;try{p=au.play()}catch(e){}
+  if(p&&p.then)p.then(started).catch(function(){timer=setTimeout(hide,1200)});else timer=setTimeout(hide,1200);return}
+ hide()});
+if(img.complete)go();else{img.addEventListener('load',go);img.addEventListener('error',function(){timer=setTimeout(hide,2400)})}
+setTimeout(function(){if(!playing&&!waiting)hide()},7000)})();
 </script>
 </body>
 </html>
