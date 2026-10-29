@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1a2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png?v=4">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=4">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="7 Wonders">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>7 Wonders · Contador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1a2e;--panel:#182a4a;--panel2:#1f3560;--line:#2f4a7a;--ink:#f1e9d6;--mute:#a9b6cf;--gold:#d4aa55;--gold2:#f0cf84;--red:#d9564a;
+--ft:'Cinzel',Georgia,serif;--fb:'Alegreya Sans','Trebuchet MS',sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:18px}
+body{min-height:100vh;background:radial-gradient(120% 60% at 50% -10%,#24407a 0%,var(--bg) 60%) no-repeat;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{max-width:640px;margin:0 auto;padding:14px 14px 110px}
+h1{font-family:var(--ft);font-weight:900;font-size:30px;letter-spacing:.04em;margin:6px 0 2px;color:var(--gold2);text-align:center}
+h1 small{display:block;font-weight:500;font-size:14px;letter-spacing:.3em;color:var(--mute);margin-top:2px}
+h2{font-family:var(--ft);font-size:19px;margin:22px 0 10px;color:var(--gold2)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.row{display:flex;align-items:center;gap:10px;justify-content:space-between}
+button{font-family:var(--fb);font-size:18px;color:var(--ink);cursor:pointer}
+button:focus-visible,input:focus-visible,label:focus-within{outline:2px solid var(--gold2);outline-offset:2px}
+.b{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);font-size:24px;line-height:1;font-weight:700}
+.b:active{background:var(--line)}
+.btn{width:100%;padding:14px;border-radius:10px;border:0;background:linear-gradient(#e3bf6a,#b98d37);color:#2a1d05;font-family:var(--ft);font-weight:700;font-size:18px;letter-spacing:.04em}
+.btn.ghost{background:transparent;border:1px solid var(--gold);color:var(--gold2)}
+.btn.sm{width:auto;padding:9px 14px;font-size:15px}
+input[type=text],input[type=number]{font-family:var(--fb);font-size:19px;color:var(--ink);background:#0f1a2e;border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+input[type=number]{text-align:center;padding:10px 4px;-moz-appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.names{display:grid;gap:8px;margin-top:10px}
+.exp{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;border-radius:12px;background:var(--panel);border:1px solid var(--line);border-left-width:8px;cursor:pointer}
+.exp input{width:22px;height:22px;accent-color:var(--gold)}
+.exp b{font-family:var(--ft);font-size:17px}
+.exp span{display:block;color:var(--mute);font-size:15px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.chip{flex:0 0 auto;min-width:92px;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:var(--panel);text-align:center}
+.chip.on{background:linear-gradient(#e3bf6a,#b98d37);color:#2a1d05;border-color:var(--gold2)}
+.chip .nm{font-weight:700;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip .tt{font-family:var(--ft);font-size:22px;font-weight:700}
+.cat{display:flex;flex-direction:column;gap:8px;padding:12px 12px 12px 14px;margin-bottom:8px;background:var(--panel);border:1px solid var(--line);border-left-width:8px;border-radius:12px}
+.cat .hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cat .hd b{font-family:var(--ft);font-size:16px}
+.cat .hd i{font-style:normal;font-family:var(--ft);font-weight:700;color:var(--gold2);white-space:nowrap}
+.cat .h{color:var(--mute);font-size:15px;margin-top:-4px}
+.st{display:grid;grid-template-columns:48px 1fr 48px;gap:8px;align-items:center}
+.st .b{width:48px;height:48px}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tri label{font-size:14px;color:var(--mute);display:block;text-align:center;margin-bottom:4px}
+.tri .st{grid-template-columns:36px 1fr 36px;gap:4px}
+.tri .st .b{width:36px;height:44px;font-size:20px}
+.total{display:flex;justify-content:space-between;align-items:center;margin:14px 0 10px;padding:12px 16px;border-radius:12px;background:var(--panel2);border:1px solid var(--gold)}
+.total b{font-family:var(--ft);font-size:18px}
+.total i{font-style:normal;font-family:var(--ft);font-size:32px;font-weight:900;color:var(--gold2)}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0));background:linear-gradient(transparent,var(--bg) 35%)}
+.bar .in{max-width:640px;margin:0 auto;display:flex;gap:8px}
+.win{text-align:center;padding:16px;border-radius:14px;background:linear-gradient(#e3bf6a,#b98d37);color:#2a1d05;margin-bottom:14px}
+.win b{font-family:var(--ft);font-size:26px;display:block}
+.rk{display:flex;align-items:center;gap:12px;padding:10px 14px;margin-bottom:8px;border-radius:12px;background:var(--panel);border:1px solid var(--line)}
+.rk .p{font-family:var(--ft);font-size:22px;font-weight:900;width:30px;color:var(--gold2)}
+.rk .n{flex:1;font-weight:700}.rk .n small{display:block;color:var(--mute);font-weight:400;font-size:14px}
+.rk .t{font-family:var(--ft);font-size:26px;font-weight:900}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel);border-left:6px solid var(--c,transparent)}
+th{font-family:var(--ft);font-size:14px;color:var(--gold2);background:var(--panel2)}
+tr.tot td{font-family:var(--ft);font-weight:900;font-size:18px;color:var(--gold2);border-bottom:0}
+.foot{text-align:center;color:var(--mute);font-size:14px;margin-top:26px}
+.neg{color:var(--red)}
+@media (prefers-reduced-motion:no-preference){.win{animation:pop .5s ease-out}@keyframes pop{from{transform:scale(.94);opacity:0}}}
+
+/* ===== Aire clasico: Grecia, Roma y Fenicia ===== */
+:root{--key:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M0 11h2V1h12v8H6V4h4M14 9v2h2' fill='none' stroke='%23d4aa55' stroke-width='1.6'/%3E%3C/svg%3E");
+--keyd:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Cpath d='M0 11h2V1h12v8H6V4h4M14 9v2h2' fill='none' stroke='%235a3f0b' stroke-width='1.6'/%3E%3C/svg%3E");
+--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+--tyr1:#4d2a70;--tyr2:#33204f;--bz:#7a5a1c}
+body{background:radial-gradient(120% 60% at 50% -10%,#2b4a86 0%,transparent 60%),repeating-linear-gradient(115deg,rgba(255,255,255,.02) 0 2px,transparent 2px 11px),var(--bg)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:var(--grain)}
+.wrap{position:relative;z-index:1}
+.key{height:14px;background:var(--key) repeat-x center;margin:4px 0;opacity:.95}
+h1{background:linear-gradient(#fff3c4,#d4aa55 55%,#9a7428);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(0,0,0,.5));letter-spacing:.12em}
+h1 small{-webkit-text-fill-color:var(--mute);filter:none}
+h2{display:flex;align-items:center;gap:10px;text-transform:uppercase;letter-spacing:.1em;font-size:17px}
+h2::before{content:"\25C6";font-size:10px;color:var(--gold)}
+h2::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.panel,.cat,.exp,.rk{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.16)),var(--panel);border-color:#4a6aa3;border-radius:6px;outline:1px solid rgba(212,170,85,.35);outline-offset:-5px;box-shadow:0 3px 8px rgba(0,0,0,.35)}
+.cat,.exp{border-left-width:10px}
+.cat .hd b,.exp b{text-transform:uppercase;letter-spacing:.06em}
+.total{background:linear-gradient(180deg,var(--tyr1),var(--tyr2));border:2px solid var(--gold);border-radius:6px;box-shadow:0 3px 10px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.18)}
+.total b{text-transform:uppercase;letter-spacing:.08em}
+.total i{text-shadow:0 2px 0 rgba(0,0,0,.5)}
+.chip{border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.15)),var(--panel);border:1px solid #4a6aa3;border-bottom:3px solid var(--bz)}
+.chip.on{background:linear-gradient(#e9c872,#b98d37);border-color:#f0cf84;border-bottom-color:#5d4310}
+.chip .rn{font-family:var(--ft);font-size:12px;letter-spacing:.25em;color:var(--gold)}
+.chip.on .rn{color:#5a3f0b}
+.btn{border:2px solid var(--bz);border-radius:5px;text-transform:uppercase;letter-spacing:.1em;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 0 #5d4310,0 6px 10px rgba(0,0,0,.35)}
+.btn:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 1px 0 #5d4310}
+.btn.ghost{background:rgba(0,0,0,.15);border:2px solid var(--gold);box-shadow:none;color:var(--gold2)}
+.b{border:2px solid var(--bz);border-radius:5px;background:linear-gradient(#37558f,#233d6e);color:var(--gold2);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.b:active{background:#1a2f58}
+.win{position:relative;border:2px solid var(--bz);border-radius:6px;padding:34px 16px;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+.win::before,.win::after{content:"";position:absolute;left:10px;right:10px;height:12px;background:var(--keyd) repeat-x center}
+.win::before{top:8px}.win::after{bottom:8px}
+.win span{letter-spacing:.18em;text-transform:uppercase;font-family:var(--ft);font-size:14px}
+.rk .p{font-size:20px;width:44px;text-align:center;letter-spacing:.05em}
+.tw{border-radius:6px;border-color:#4a6aa3}
+.foot{letter-spacing:.12em}
+.foot::before{content:"";display:block;height:14px;background:var(--key) repeat-x center;margin-bottom:12px}
+
+/* ===== Cabecera fija ===== */
+body{padding-top:0}
+.wrap{padding-top:0}
+.top{position:sticky;top:0;z-index:20;margin:0 -14px 12px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;background:linear-gradient(180deg,rgba(15,26,46,.98),rgba(15,26,46,.93));-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-bottom:1px solid rgba(212,170,85,.35);box-shadow:0 6px 14px rgba(0,0,0,.35)}
+.top h1{font-size:30px;margin:6px 0 2px}
+.top h1 small{font-size:12px;margin-top:2px}
+.top .key{height:14px;margin:4px 0}
+
+/* ===== Pantalla de inicio (splash) ===== */
+#splash{position:fixed;inset:0;z-index:9999;background:#2a47a0;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity .6s ease,visibility .6s;cursor:pointer}
+#splash.out{opacity:0;visibility:hidden;pointer-events:none}
+#splash img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+@media (prefers-reduced-motion:no-preference){#splash img{animation:spz 3.2s ease-out both}@keyframes spz{from{transform:scale(1.06)}to{transform:scale(1)}}}
+
+.legal{max-width:520px;margin:10px auto 0;font-size:12.5px;line-height:1.45;letter-spacing:0;color:var(--mute);opacity:.85}
+
+.tap{position:absolute;left:0;right:0;bottom:calc(8% + env(safe-area-inset-bottom,0px));text-align:center;font-family:var(--ft);font-weight:700;font-size:16px;letter-spacing:.22em;text-transform:uppercase;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.65);opacity:0;pointer-events:none;transition:opacity .4s}
+.tap.show{opacity:1;animation:tapp 1.5s ease-in-out infinite}
+@keyframes tapp{50%{opacity:.4}}
+</style>
+</head>
+<body>
+<div id="splash" role="img" aria-label="7 Wonders Contador"><img src="splash.webp?v=1" alt="" decoding="async" fetchpriority="high"><div id="splashHint" class="tap">Toca para entrar</div></div>
+<div class="wrap" id="app"></div>
+<script>
+let askReset=false,askT=0;
+const KEY='sw7-contador-v1';
+const EXP={armada:{n:'Armada',c:'#e0b400',d:'Flotas, islas y conflictos navales'},cities:{n:'Cities',c:'#2e9b62',d:'Cartas negras, deuda y diplomacia'},leaders:{n:'Leaders',c:'#5fa8d3',d:'Líderes y su puntuación'},edifice:{n:'Edifice',c:'#9b59b6',d:'Edificaciones y penalizaciones'}};
+const CATS=[
+{k:'wonder',l:'Etapas de Maravilla',c:'#a89572',h:'Puntos de las etapas construidas'},
+{k:'coins',l:'Tesorería',c:'#d4aa55',h:'Monedas en tu tesorería: 1 punto por cada 3',coins:1},
+{k:'blue',l:'Cartas azules',c:'#3b7ed0'},
+{k:'yellow',l:'Cartas amarillas',c:'#e0b400'},
+{k:'sci',l:'Ciencia',c:'#2e9b62',sci:1,h:'Cuenta también los símbolos de las etapas'},
+{k:'purple',l:'Cartas moradas',c:'#9b59b6'},
+{k:'mil',l:'Conflictos militares',c:'#d9564a',neg:1,h:'Suma de victorias y derrotas (puede ser negativo)'},
+{k:'fleet',l:'Flota azul',c:'#3b7ed0',e:['armada'],h:'Puntos de la casilla de tu miniatura azul'},
+{k:'island',l:'Cartas de isla',c:'#e0b400',e:['armada']},
+{k:'naval',l:'Conflictos navales',c:'#e0b400',e:['armada'],neg:1,h:'Suma de victorias y derrotas navales'},
+{k:'black',l:'Cartas negras',c:'#8a8f99',e:['cities'],neg:1},
+{k:'debt',l:'Fichas de deuda',c:'#2e9b62',e:['cities','armada','edifice'],sub:1,h:'Cada ficha resta 1 punto'},
+{k:'penal',l:'Penalización de edificios',c:'#9b59b6',e:['edifice'],sub:1,h:'Puntos que pierdes por no participar'},
+{k:'leaders',l:'Líderes',c:'#5fa8d3',e:['leaders']}];
+function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let S=load()||{screen:'setup',n:4,cur:0,exp:{armada:false,cities:false,leaders:false,edifice:false},players:[]};
+function P(){while(S.players.length<S.n)S.players.push({name:'',v:{}});return S.players.slice(0,S.n)}
+const nm=(p,i)=>p.name.trim()||('Jugador '+(i+1));
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const on=c=>!c.e||c.e.some(x=>S.exp[x]);
+const num=(p,k)=>parseInt(p.v[k])||0;
+function score(p){const r={};let t=0;
+ for(const c of CATS){if(!on(c))continue;let x;
+  if(c.coins)x=Math.floor(num(p,'coins')/3);
+  else if(c.sci){const a=num(p,'st'),b=num(p,'sc'),g=num(p,'sg');x=a*a+b*b+g*g+7*Math.min(a,b,g)}
+  else x=num(p,c.k)*(c.sub?-1:1);
+  r[c.k]=x;t+=x}
+ return{r,t}}
+function ranking(){const a=P().map((p,i)=>({p,i,s:score(p),co:num(p,'coins')}));
+ a.sort((x,y)=>y.s.t-x.s.t||y.co-x.co);
+ a.forEach((o,j)=>{o.pos=(j>0&&o.s.t===a[j-1].s.t&&o.co===a[j-1].co)?a[j-1].pos:j+1});return a}
+const pts=x=>(x>0?'':'')+x+' pts';
+function stp(k,v,neg){return `<div class="st"><button class="b" data-act="step" data-k="${k}" data-d="-1" aria-label="Restar">−</button><input type="number" ${neg?'':'inputmode="numeric" min="0"'} data-f="${k}" value="${v}" aria-label="${k}"><button class="b" data-act="step" data-k="${k}" data-d="1" aria-label="Sumar">+</button></div>`}
+function render(){const A=document.getElementById('app');
+ if(S.screen==='setup')A.innerHTML=setup();else if(S.screen==='score')A.innerHTML=scoreView();else A.innerHTML=results();
+ window.scrollTo(0,0);save()}
+const head='<header class="top"><div class="key"></div><h1>7 WONDERS<small>CONTADOR DE PUNTOS</small></h1><div class="key"></div></header>';
+const RN=['','I','II','III','IV','V','VI','VII'];
+const foot='<div class="foot">Creado por PenTech<p class="legal">7 Wonders es un juego de mesa editado en España por Asmodee Spain. Este contador es una herramienta no oficial, creada por PenTech para facilitar el recuento de puntos; no está afiliado, patrocinado ni avalado por los autores ni por los editores del juego. Los nombres, marcas y expansiones (Armada, Cities, Leaders y Edifice) pertenecen a sus respectivos propietarios.</p></div>';
+function setup(){const ps=P();
+ return head+`<h2>Jugadores</h2><div class="panel"><div class="row"><b>Número de jugadores</b><div class="st" style="width:170px;grid-template-columns:44px 1fr 44px"><button class="b" data-act="n" data-d="-1" style="width:44px;height:44px">−</button><b style="text-align:center;font-size:22px">${S.n}</b><button class="b" data-act="n" data-d="1" style="width:44px;height:44px">+</button></div></div>
+ <div class="names">${ps.map((p,i)=>`<input type="text" autocomplete="off" data-name="${i}" placeholder="Jugador ${i+1}" value="${esc(p.name)}" maxlength="18">`).join('')}</div></div>
+ <h2>Expansiones</h2>${Object.entries(EXP).map(([k,e])=>`<label class="exp" style="border-left-color:${e.c}"><input type="checkbox" data-exp="${k}" ${S.exp[k]?'checked':''}><div><b>${e.n}</b><span>${e.d}</span></div></label>`).join('')}
+ <p style="color:var(--mute);font-size:15px;margin:6px 2px 16px">El juego base siempre está incluido.</p>
+ <button class="btn" data-act="start">Empezar a contar</button>${foot}`}
+function scoreView(){const ps=P();const p=ps[S.cur];
+ const chips=ps.map((q,i)=>`<button class="chip ${i===S.cur?'on':''}" data-act="tab" data-i="${i}"><div class="rn">${RN[i+1]}</div><div class="nm">${esc(nm(q,i))}</div><div class="tt" id="ct${i}">${score(q).t}</div></button>`).join('');
+ const rows=CATS.filter(on).map(c=>{
+  let body;
+  if(c.sci)body=`<div class="tri">${[['st','Tablilla'],['sc','Compás'],['sg','Engranaje']].map(([k,l])=>`<div><label>${l}</label>${stp(k,num(p,k))}</div>`).join('')}</div>`;
+  else body=stp(c.k,num(p,c.k),c.neg);
+  return `<div class="cat" style="border-left-color:${c.c}"><div class="hd"><b>${c.l}</b><i id="pt-${c.k}"></i></div>${c.h?`<div class="h">${c.h}</div>`:''}${body}</div>`}).join('');
+ const last=S.cur===ps.length-1;
+ return head+`<div class="chips">${chips}</div>
+ <div class="total"><b id="who">${esc(nm(p,S.cur))}</b><i id="tot">0</i></div>${rows}
+ <div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="settings">Ajustes</button><button class="btn ghost sm" data-act="next">${last?'Primer jugador':'Siguiente jugador'}</button></div>${foot}
+ <div class="bar"><div class="in"><button class="btn" data-act="results">Ver resultados</button></div></div>`}
+function live(){const ps=P();const p=ps[S.cur];const s=score(p);
+ ps.forEach((q,i)=>{const e=document.getElementById('ct'+i);if(e)e.textContent=score(q).t});
+ const t=document.getElementById('tot');if(t)t.textContent=s.t;
+ for(const c of CATS){const e=document.getElementById('pt-'+c.k);if(e&&c.k in s.r)e.textContent=s.r[c.k]+' pts'}
+ const sc=document.getElementById('pt-sci');if(sc){const a=num(p,'st'),b=num(p,'sc'),g=num(p,'sg'),m=Math.min(a,b,g);sc.textContent=s.r.sci+' pts'+(m?' ('+m+(m>1?' grupos':' grupo')+')':'')}}
+function results(){const r=ranking();const top=r.filter(o=>o.pos===1);
+ const cats=CATS.filter(on);
+ const win=top.length>1?`Empate: ${top.map(o=>esc(nm(o.p,o.i))).join(' y ')}`:esc(nm(top[0].p,top[0].i));
+ return head+`<div class="win"><span>${top.length>1?'Victoria compartida':'Ganador'}</span><b>${win}</b>${top[0].s.t} puntos</div>
+ ${r.map(o=>`<div class="rk"><div class="p">${RN[o.pos]}</div><div class="n">${esc(nm(o.p,o.i))}<small>${o.co} monedas</small></div><div class="t">${o.s.t}</div></div>`).join('')}
+ <p style="color:var(--mute);font-size:15px;margin:4px 2px 0">En caso de empate gana quien tenga más monedas; si siguen igualados, comparten la victoria.</p>
+ <h2>Desglose</h2><div class="tw"><table><tr><th></th>${r.map(o=>`<th>${esc(nm(o.p,o.i))}</th>`).join('')}</tr>
+ ${cats.map(c=>`<tr style="--c:${c.c}"><td>${c.l}</td>${r.map(o=>{const v=o.s.r[c.k];return `<td class="${v<0?'neg':''}">${v}</td>`}).join('')}</tr>`).join('')}
+ <tr class="tot"><td>Total</td>${r.map(o=>`<td>${o.s.t}</td>`).join('')}</tr></table></div>
+ <div style="display:grid;gap:8px;margin-top:18px"><button class="btn" data-act="back">Volver a las puntuaciones</button><button class="btn ghost" data-act="reset">Nueva partida</button></div>${foot}`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+ if(a==='step'){const k=b.dataset.k;const i=document.querySelector(`input[data-f="${k}"]`);const c=CATS.find(x=>x.k===k);const neg=c&&c.neg;
+  let v=(parseInt(i.value)||0)+parseInt(b.dataset.d);if(!neg&&v<0)v=0;i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}));return}
+ if(a==='n'){S.n=Math.min(7,Math.max(3,S.n+parseInt(b.dataset.d)));render()}
+ else if(a==='start'){S.cur=0;S.screen='score';render();live()}
+ else if(a==='tab'){S.cur=parseInt(b.dataset.i);render();live()}
+ else if(a==='next'){S.cur=(S.cur+1)%S.n;render();live()}
+ else if(a==='results'){S.screen='results';render()}
+ else if(a==='back'){S.screen='score';render();live()}
+ else if(a==='settings'){S.screen='setup';render()}
+ else if(a==='reset'){
+  if(!askReset){askReset=true;b.textContent='¿Seguro? Pulsa de nuevo para borrar';clearTimeout(askT);askT=setTimeout(()=>{askReset=false;b.textContent='Nueva partida'},4000);return}
+  clearTimeout(askT);askReset=false;S={screen:'setup',n:4,cur:0,exp:{armada:false,cities:false,leaders:false,edifice:false},players:[]};render()}});
+document.addEventListener('input',e=>{const t=e.target;
+ if(t.dataset.f){const c=CATS.find(x=>x.k===t.dataset.f);let v=parseInt(t.value)||0;if(!(c&&c.neg)&&v<0){v=0;t.value=0}P()[S.cur].v[t.dataset.f]=v;save();live()}
+ else if(t.dataset.name!==undefined){P()[+t.dataset.name].name=t.value;save()}});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset.exp){S.exp[t.dataset.exp]=t.checked;save()}});
+render();if(S.screen==='score')live();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+(function(){var sp=document.getElementById('splash');if(!sp)return;
+var done=false,img=sp.querySelector('img'),hint=document.getElementById('splashHint');
+var au=new Audio('fanfare.mp3?v=2');au.preload='auto';
+var timer=0,waiting=false,playing=false;
+function hide(){if(done)return;done=true;clearTimeout(timer);
+ try{var v=au.volume,k=0,iv=setInterval(function(){k++;au.volume=Math.max(0,v*(1-k/8));if(k>=8){clearInterval(iv);au.pause()}},60)}catch(e){}
+ sp.classList.add('out');setTimeout(function(){sp.remove()},700)}
+function started(){playing=true;waiting=false;hint.classList.remove('show');clearTimeout(timer);
+ var d=(isFinite(au.duration)&&au.duration>0)?au.duration:4.8;timer=setTimeout(hide,Math.max(2400,d*1000-700))}
+function blocked(){waiting=true;hint.classList.add('show')}
+function go(){var p;try{p=au.play()}catch(e){}
+ if(p&&p.then){p.then(started).catch(blocked)}else{timer=setTimeout(hide,2400)}}
+sp.addEventListener('click',function(){
+ if(waiting){waiting=false;hint.classList.remove('show');var p;try{p=au.play()}catch(e){}
+  if(p&&p.then)p.then(started).catch(function(){timer=setTimeout(hide,1200)});else timer=setTimeout(hide,1200);return}
+ hide()});
+if(img.complete)go();else{img.addEventListener('load',go);img.addEventListener('error',function(){timer=setTimeout(hide,2400)})}
+setTimeout(function(){if(!playing&&!waiting)hide()},7000)})();
+</script>
+</body>
+</html>
