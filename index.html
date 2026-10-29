@@ -137,6 +137,16 @@ body{padding-top:0}
 .tap{position:absolute;left:0;right:0;bottom:calc(8% + env(safe-area-inset-bottom,0px));text-align:center;font-family:var(--ft);font-weight:700;font-size:16px;letter-spacing:.22em;text-transform:uppercase;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.65);opacity:0;pointer-events:none;transition:opacity .4s}
 .tap.show{opacity:1;animation:tapp 1.5s ease-in-out infinite}
 @keyframes tapp{50%{opacity:.4}}
+
+/* ===== Licencia ===== */
+.lic-st{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;margin:0 0 12px;border:1px solid #4a6aa3;border-radius:6px;background:rgba(0,0,0,.18);font-size:16px;color:var(--mute)}
+.lic-st.ok{justify-content:center;color:var(--gold2);border-color:var(--gold);font-family:var(--ft);letter-spacing:.06em}
+.lic p{margin:0 0 12px;line-height:1.4}
+.lic input{text-align:center;letter-spacing:.12em;font-family:var(--ft);text-transform:uppercase}
+.lerr{color:#ff8a7e;min-height:22px;font-size:15px;margin:8px 2px}
+a.btn{display:block;text-align:center;text-decoration:none}
+.lic input{font-size:18px}
+.trialnote{text-align:center;color:var(--gold2);font-size:15px;margin:12px 0 0}
 </style>
 </head>
 <body>
@@ -161,9 +171,21 @@ const CATS=[
 {k:'debt',l:'Fichas de deuda',c:'#2e9b62',e:['cities','armada','edifice'],sub:1,h:'Cada ficha resta 1 punto'},
 {k:'penal',l:'Penalización de edificios',c:'#9b59b6',e:['edifice'],sub:1,h:'Puntos que pierdes por no participar'},
 {k:'leaders',l:'Líderes',c:'#5fa8d3',e:['leaders']}];
+/* ===== Licencia ===== */
+const FREE_GAMES=3;                                   // partidas gratuitas de prueba
+const MASTER_KEY='K7QM-4PXD';                         // CLAVE ÚNICA: cámbiala por la tuya (solo letras A-Z y números)
+const BUY_URL='https://buymeacoffee.com/pentech/e/592692'; // dónde se compra la clave
+const LKEY='sw7-lic-v2',TKEY='sw7-trial-v1';
+const normKey=k=>String(k||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const validKey=k=>!!normKey(k)&&normKey(k)===normKey(MASTER_KEY);
+function lget(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lset(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+let LIC=validKey(lget(LKEY)),TRIAL=parseInt(lget(TKEY))||0;
+const left=()=>Math.max(0,FREE_GAMES-TRIAL);
 function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 let S=load()||{screen:'setup',n:4,cur:0,exp:{armada:false,cities:false,leaders:false,edifice:false},players:[]};
+if(!LIC&&(S.screen==='setup'||S.screen==='license'))S.screen='license';
 function P(){while(S.players.length<S.n)S.players.push({name:'',v:{}});return S.players.slice(0,S.n)}
 const nm=(p,i)=>p.name.trim()||('Jugador '+(i+1));
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -182,7 +204,7 @@ function ranking(){const a=P().map((p,i)=>({p,i,s:score(p),co:num(p,'coins')}));
 const pts=x=>(x>0?'':'')+x+' pts';
 function stp(k,v,neg){return `<div class="st"><button class="b" data-act="step" data-k="${k}" data-d="-1" aria-label="Restar">−</button><input type="number" ${neg?'':'inputmode="numeric" min="0"'} data-f="${k}" value="${v}" aria-label="${k}"><button class="b" data-act="step" data-k="${k}" data-d="1" aria-label="Sumar">+</button></div>`}
 function render(){const A=document.getElementById('app');
- if(S.screen==='setup')A.innerHTML=setup();else if(S.screen==='score')A.innerHTML=scoreView();else A.innerHTML=results();
+ if(S.screen==='setup')A.innerHTML=setup();else if(S.screen==='score')A.innerHTML=scoreView();else if(S.screen==='license')A.innerHTML=LIC?setup():licenseView();else A.innerHTML=results();
  window.scrollTo(0,0);save()}
 const head='<header class="top"><div class="key"></div><h1>7 WONDERS<small>CONTADOR DE PUNTOS</small></h1><div class="key"></div></header>';
 const RN=['','I','II','III','IV','V','VI','VII'];
@@ -192,7 +214,17 @@ function setup(){const ps=P();
  <div class="names">${ps.map((p,i)=>`<input type="text" autocomplete="off" data-name="${i}" placeholder="Jugador ${i+1}" value="${esc(p.name)}" maxlength="18">`).join('')}</div></div>
  <h2>Expansiones</h2>${Object.entries(EXP).map(([k,e])=>`<label class="exp" style="border-left-color:${e.c}"><input type="checkbox" data-exp="${k}" ${S.exp[k]?'checked':''}><div><b>${e.n}</b><span>${e.d}</span></div></label>`).join('')}
  <p style="color:var(--mute);font-size:15px;margin:6px 2px 16px">El juego base siempre está incluido.</p>
+ ${licPanel()}
  <button class="btn" data-act="start">Empezar a contar</button>${foot}`}
+function licPanel(){return LIC?`<div class="lic-st ok">Versión completa activada</div>`:`<div class="lic-st"><span>Prueba gratuita: ${left()} de ${FREE_GAMES} partidas</span><button class="btn ghost sm" data-act="lic">Tengo una clave</button></div>`}
+function licenseView(){const l=left();
+ const intro=l===FREE_GAMES?`Prueba gratis ${FREE_GAMES} partidas o introduce tu clave para desbloquear la versión completa.`:l>0?`Te ${l===1?'queda 1 partida gratuita':'quedan '+l+' partidas gratuitas'}. Introduce tu clave para desbloquear la versión completa.`:`Has usado tus ${FREE_GAMES} partidas gratuitas. Introduce tu clave para seguir contando sin límites.`;
+ const trial=l>0?`<button class="btn ghost" data-act="licback">${l===FREE_GAMES?`Probar gratis · ${FREE_GAMES} partidas`:`Seguir probando · ${l===1?'queda 1 partida':'quedan '+l+' partidas'}`}</button>`:(S.counted?`<button class="btn ghost" data-act="licback">Volver</button>`:'');
+ return head+`<h2>Acceso</h2><div class="panel lic"><p>${intro}</p>
+ <input type="text" id="licIn" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Escribe tu clave" maxlength="40">
+ <div class="lerr" id="licErr" role="alert"></div>
+ <button class="btn" data-act="activate">Activar clave</button></div>
+ <div style="display:grid;gap:10px;margin-top:12px"><a class="btn buy" href="${BUY_URL}" target="_blank" rel="noopener">Comprar clave</a>${trial}</div>${foot}`}
 function scoreView(){const ps=P();const p=ps[S.cur];
  const chips=ps.map((q,i)=>`<button class="chip ${i===S.cur?'on':''}" data-act="tab" data-i="${i}"><div class="rn">${RN[i+1]}</div><div class="nm">${esc(nm(q,i))}</div><div class="tt" id="ct${i}">${score(q).t}</div></button>`).join('');
  const rows=CATS.filter(on).map(c=>{
@@ -219,15 +251,21 @@ function results(){const r=ranking();const top=r.filter(o=>o.pos===1);
  <h2>Desglose</h2><div class="tw"><table><tr><th></th>${r.map(o=>`<th>${esc(nm(o.p,o.i))}</th>`).join('')}</tr>
  ${cats.map(c=>`<tr style="--c:${c.c}"><td>${c.l}</td>${r.map(o=>{const v=o.s.r[c.k];return `<td class="${v<0?'neg':''}">${v}</td>`}).join('')}</tr>`).join('')}
  <tr class="tot"><td>Total</td>${r.map(o=>`<td>${o.s.t}</td>`).join('')}</tr></table></div>
+ ${LIC?'':`<p class="trialnote">${left()>0?'Prueba gratuita: te '+(left()===1?'queda 1 partida':'quedan '+left()+' partidas')+'.':'Has usado tu prueba gratuita.'}</p>`}
  <div style="display:grid;gap:8px;margin-top:18px"><button class="btn" data-act="back">Volver a las puntuaciones</button><button class="btn ghost" data-act="reset">Nueva partida</button></div>${foot}`}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
  if(a==='step'){const k=b.dataset.k;const i=document.querySelector(`input[data-f="${k}"]`);const c=CATS.find(x=>x.k===k);const neg=c&&c.neg;
   let v=(parseInt(i.value)||0)+parseInt(b.dataset.d);if(!neg&&v<0)v=0;i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}));return}
  if(a==='n'){S.n=Math.min(7,Math.max(3,S.n+parseInt(b.dataset.d)));render()}
- else if(a==='start'){S.cur=0;S.screen='score';render();live()}
+ else if(a==='start'){if(!LIC&&left()<=0&&!S.counted){S.screen='license';render();return}S.cur=0;S.screen='score';render();live()}
+ else if(a==='lic'){S.screen='license';render()}
+ else if(a==='licback'){S.screen='setup';render()}
+ else if(a==='activate'){const i=document.getElementById('licIn'),er=document.getElementById('licErr');
+  if(validKey(i.value)){lset(LKEY,normKey(i.value));LIC=true;S.screen='setup';render()}
+  else{er.textContent=normKey(i.value)?'La clave no es válida. Revisa que esté bien escrita.':'Escribe tu clave de licencia.';i.focus()}}
  else if(a==='tab'){S.cur=parseInt(b.dataset.i);render();live()}
  else if(a==='next'){S.cur=(S.cur+1)%S.n;render();live()}
- else if(a==='results'){S.screen='results';render()}
+ else if(a==='results'){if(!S.counted){S.counted=true;if(!LIC){TRIAL++;lset(TKEY,String(TRIAL))}}S.screen='results';render()}
  else if(a==='back'){S.screen='score';render();live()}
  else if(a==='settings'){S.screen='setup';render()}
  else if(a==='reset'){
@@ -236,13 +274,14 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(
 document.addEventListener('input',e=>{const t=e.target;
  if(t.dataset.f){const c=CATS.find(x=>x.k===t.dataset.f);let v=parseInt(t.value)||0;if(!(c&&c.neg)&&v<0){v=0;t.value=0}P()[S.cur].v[t.dataset.f]=v;save();live()}
  else if(t.dataset.name!==undefined){P()[+t.dataset.name].name=t.value;save()}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='licIn'){const b=document.querySelector('[data-act="activate"]');if(b)b.click()}});
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset.exp){S.exp[t.dataset.exp]=t.checked;save()}});
 render();if(S.screen==='score')live();
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 
 (function(){var sp=document.getElementById('splash');if(!sp)return;
 var done=false,img=sp.querySelector('img'),hint=document.getElementById('splashHint');
-var au=new Audio('fanfare.mp3?v=1');au.preload='auto';
+var au=new Audio('fanfare.mp3?v=2');au.preload='auto';
 var timer=0,waiting=false,playing=false;
 function hide(){if(done)return;done=true;clearTimeout(timer);
  try{var v=au.volume,k=0,iv=setInterval(function(){k++;au.volume=Math.max(0,v*(1-k/8));if(k>=8){clearInterval(iv);au.pause()}},60)}catch(e){}
