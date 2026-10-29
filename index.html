@@ -146,7 +146,7 @@ body{padding-top:0}
 .lerr{color:#ff8a7e;min-height:22px;font-size:15px;margin:8px 2px}
 a.btn{display:block;text-align:center;text-decoration:none}
 .lic input{font-size:18px}
-.trialnote{text-align:center;color:var(--gold2);font-size:15px;margin:12px 0 0}
+.ver{margin-top:12px;font-size:13px;letter-spacing:.1em;color:var(--mute);opacity:.7}
 </style>
 </head>
 <body>
@@ -172,6 +172,7 @@ const CATS=[
 {k:'penal',l:'Penalización de edificios',c:'#9b59b6',e:['edifice'],sub:1,h:'Puntos que pierdes por no participar'},
 {k:'leaders',l:'Líderes',c:'#5fa8d3',e:['leaders']}];
 /* ===== Licencia ===== */
+const APP_VERSION='1.0';                              // versión de la app (se muestra al final)
 const FREE_GAMES=3;                                   // partidas gratuitas de prueba
 const MASTER_KEY='K7QM-4PXD';                         // CLAVE ÚNICA: cámbiala por la tuya (solo letras A-Z y números)
 const BUY_URL='https://buymeacoffee.com/pentech/e/592692'; // dónde se compra la clave
@@ -208,7 +209,7 @@ function render(){const A=document.getElementById('app');
  window.scrollTo(0,0);save()}
 const head='<header class="top"><div class="key"></div><h1>7 WONDERS<small>CONTADOR DE PUNTOS</small></h1><div class="key"></div></header>';
 const RN=['','I','II','III','IV','V','VI','VII'];
-const foot='<div class="foot">Creado por PenTech<p class="legal">7 Wonders es un juego de mesa editado en España por Asmodee Spain. Este contador es una herramienta no oficial, creada por PenTech para facilitar el recuento de puntos; no está afiliado, patrocinado ni avalado por los autores ni por los editores del juego. Los nombres, marcas y expansiones (Armada, Cities, Leaders y Edifice) pertenecen a sus respectivos propietarios.</p></div>';
+const foot='<div class="foot">Creado por PenTech<p class="legal">7 Wonders es un juego de mesa editado en España por Asmodee Spain. Este contador es una herramienta no oficial, creada por PenTech para facilitar el recuento de puntos; no está afiliado, patrocinado ni avalado por los autores ni por los editores del juego. Los nombres, marcas y expansiones (Armada, Cities, Leaders y Edifice) pertenecen a sus respectivos propietarios.</p><div class="ver">v'+APP_VERSION+'</div></div>';
 function setup(){const ps=P();
  return head+`<h2>Jugadores</h2><div class="panel"><div class="row"><b>Número de jugadores</b><div class="st" style="width:170px;grid-template-columns:44px 1fr 44px"><button class="b" data-act="n" data-d="-1" style="width:44px;height:44px">−</button><b style="text-align:center;font-size:22px">${S.n}</b><button class="b" data-act="n" data-d="1" style="width:44px;height:44px">+</button></div></div>
  <div class="names">${ps.map((p,i)=>`<input type="text" autocomplete="off" data-name="${i}" placeholder="Jugador ${i+1}" value="${esc(p.name)}" maxlength="18">`).join('')}</div></div>
@@ -216,7 +217,7 @@ function setup(){const ps=P();
  <p style="color:var(--mute);font-size:15px;margin:6px 2px 16px">El juego base siempre está incluido.</p>
  ${licPanel()}
  <button class="btn" data-act="start">Empezar a contar</button>${foot}`}
-function licPanel(){return LIC?`<div class="lic-st ok">Versión completa activada</div>`:`<div class="lic-st"><span>Prueba gratuita: ${left()} de ${FREE_GAMES} partidas</span><button class="btn ghost sm" data-act="lic">Tengo una clave</button></div>`}
+function licPanel(){return LIC?`<div class="lic-st ok">Versión completa</div>`:''}
 function licenseView(){const l=left();
  const intro=l===FREE_GAMES?`Prueba gratis ${FREE_GAMES} partidas o introduce tu clave para desbloquear la versión completa.`:l>0?`Te ${l===1?'queda 1 partida gratuita':'quedan '+l+' partidas gratuitas'}. Introduce tu clave para desbloquear la versión completa.`:`Has usado tus ${FREE_GAMES} partidas gratuitas. Introduce tu clave para seguir contando sin límites.`;
  const trial=l>0?`<button class="btn ghost" data-act="licback">${l===FREE_GAMES?`Probar gratis · ${FREE_GAMES} partidas`:`Seguir probando · ${l===1?'queda 1 partida':'quedan '+l+' partidas'}`}</button>`:(S.counted?`<button class="btn ghost" data-act="licback">Volver</button>`:'');
@@ -251,7 +252,6 @@ function results(){const r=ranking();const top=r.filter(o=>o.pos===1);
  <h2>Desglose</h2><div class="tw"><table><tr><th></th>${r.map(o=>`<th>${esc(nm(o.p,o.i))}</th>`).join('')}</tr>
  ${cats.map(c=>`<tr style="--c:${c.c}"><td>${c.l}</td>${r.map(o=>{const v=o.s.r[c.k];return `<td class="${v<0?'neg':''}">${v}</td>`}).join('')}</tr>`).join('')}
  <tr class="tot"><td>Total</td>${r.map(o=>`<td>${o.s.t}</td>`).join('')}</tr></table></div>
- ${LIC?'':`<p class="trialnote">${left()>0?'Prueba gratuita: te '+(left()===1?'queda 1 partida':'quedan '+left()+' partidas')+'.':'Has usado tu prueba gratuita.'}</p>`}
  <div style="display:grid;gap:8px;margin-top:18px"><button class="btn" data-act="back">Volver a las puntuaciones</button><button class="btn ghost" data-act="reset">Nueva partida</button></div>${foot}`}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
  if(a==='step'){const k=b.dataset.k;const i=document.querySelector(`input[data-f="${k}"]`);const c=CATS.find(x=>x.k===k);const neg=c&&c.neg;
