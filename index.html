@@ -102,7 +102,7 @@ h2::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--go
 .total i{text-shadow:0 2px 0 rgba(0,0,0,.5)}
 .chip{border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.15)),var(--panel);border:1px solid #4a6aa3;border-bottom:3px solid var(--bz)}
 .chip.on{background:linear-gradient(#e9c872,#b98d37);border-color:#f0cf84;border-bottom-color:#5d4310}
-.chip .rn{font-family:var(--ft);font-size:12px;letter-spacing:.25em;color:var(--gold)}
+.chip .rn{font-family:var(--ft);font-weight:900;font-size:15px;letter-spacing:.18em;color:var(--gold2);text-shadow:0 1px 0 rgba(0,0,0,.5)}
 .chip.on .rn{color:#5a3f0b}
 .btn{border:2px solid var(--bz);border-radius:5px;text-transform:uppercase;letter-spacing:.1em;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 0 #5d4310,0 6px 10px rgba(0,0,0,.35)}
 .btn:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 1px 0 #5d4310}
@@ -159,7 +159,7 @@ a.btn{display:block;text-align:center;text-decoration:none}
 .cat.rg{display:grid;grid-template-columns:128px minmax(0,1fr);column-gap:10px;row-gap:6px;align-items:center;padding:12px 12px 12px 10px}
 .cat.rg .lf{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;min-width:0}
 .cat.rg .ci{width:84px;height:84px;margin:-2px 0 0;filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))}
-.cat.rg .lf b{font-family:var(--ft);font-size:12.5px;line-height:1.2;letter-spacing:.03em;text-transform:uppercase;overflow-wrap:break-word;hyphens:auto;max-width:100%}
+.cat.rg .lf b{font-family:var(--ft);font-size:12px;line-height:1.2;letter-spacing:.03em;text-transform:uppercase;overflow-wrap:break-word;hyphens:none;word-break:normal;text-wrap:balance;max-width:100%}
 .cat.rg .rt{display:flex;flex-direction:column;gap:8px;min-width:0}
 .cat.rg .pts{align-self:flex-end;display:flex;align-items:baseline;gap:5px;font-family:var(--ft);color:var(--gold2);line-height:1;text-shadow:0 2px 0 rgba(0,0,0,.45)}
 .cat.rg .pts b{font-size:34px;font-weight:900}
@@ -168,9 +168,10 @@ a.btn{display:block;text-align:center;text-decoration:none}
 .cat.rg .st{grid-template-columns:46px minmax(0,1fr) 46px;gap:6px}
 .cat.rg .st .b{width:46px;height:46px}
 .cat.rg .st input{padding:10px 2px}
-.cat.rg .h{grid-column:1/-1;margin-top:0;font-size:14.5px;line-height:1.3;padding:0 2px}
+.cat.rg .h{grid-column:1/-1;margin-top:0;font-size:14.5px;line-height:1.3;padding:0 2px;text-align:center;text-wrap:balance}
 
 /* ===== Ciencia: misma estructura que el resto ===== */
+.cat.rg .st .b{border-width:3.5px;border-color:#b8892f}
 .cat.rg.sci{grid-template-columns:116px minmax(0,1fr)}
 .cat.rg.sci .ci{width:104px;height:104px}
 .cat.rg.sci .h{text-align:center}
@@ -181,6 +182,14 @@ a.btn{display:block;text-align:center;text-decoration:none}
 .cat.rg .srow .st .b{width:38px;height:42px;font-size:20px}
 .cat.rg .srow .st input{padding:9px 2px;font-size:18px;min-width:0}
 .cat.rg .pts small.gr{margin-right:auto;padding-right:8px;font-size:12.5px;letter-spacing:.04em;color:var(--gold);font-weight:700;white-space:nowrap}
+
+/* ===== Banda dorada de puntos ===== */
+.cat.rg .pts{align-self:stretch;justify-content:center;align-items:baseline;gap:6px;padding:7px 12px 6px;border:2px solid #7a5a1c;border-radius:6px;background:linear-gradient(#f1d48a,#d0a443 55%,#b98d37);color:#2a1d05;text-shadow:0 1px 0 rgba(255,255,255,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 0 0 2px rgba(122,90,28,.25),0 3px 6px rgba(0,0,0,.4)}
+.cat.rg .pts b{font-size:32px;color:#2a1d05}
+.cat.rg .pts b.neg{color:#8a1c12}
+.cat.rg .pts small{color:#5a3f0b;font-size:13px}
+.cat.rg .pts small.gr{margin-right:auto;padding-right:8px;color:#5a3f0b}
+.cat.rg.sci .pts{justify-content:flex-end}
 @media (max-width:370px){.cat.rg.sci{grid-template-columns:100px minmax(0,1fr)}.cat.rg.sci .ci{width:90px;height:90px}.srow{grid-template-columns:64px minmax(0,1fr)}.srow span{font-size:13.5px}.cat.rg .srow .st .b{width:34px}.cat.rg .srow .st{grid-template-columns:34px minmax(0,1fr) 34px}}
 </style>
 </head>
