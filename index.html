@@ -147,6 +147,41 @@ body{padding-top:0}
 a.btn{display:block;text-align:center;text-decoration:none}
 .lic input{font-size:18px}
 .ver{margin-top:12px;font-size:13px;letter-spacing:.1em;color:var(--mute);opacity:.7}
+
+/* ===== Iconos de categoria ===== */
+.cat .hd{display:flex;align-items:center;gap:12px}
+.cat .hd b{flex:1;min-width:0}
+.ci{width:52px;height:52px;flex:none;object-fit:contain;margin:-4px 0;filter:drop-shadow(0 3px 3px rgba(0,0,0,.45))}
+.ti{width:30px;height:30px;vertical-align:middle;margin-right:8px;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+.tri label img.si{display:block;width:58px;height:58px;margin:0 auto 2px;object-fit:contain;filter:drop-shadow(0 3px 3px rgba(0,0,0,.45))}
+
+/* ===== Tarjeta con placa de icono (v2) ===== */
+.cat.rg{display:grid;grid-template-columns:128px minmax(0,1fr);column-gap:10px;row-gap:6px;align-items:center;padding:12px 12px 12px 10px}
+.cat.rg .lf{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;min-width:0}
+.cat.rg .ci{width:84px;height:84px;margin:-2px 0 0;filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))}
+.cat.rg .lf b{font-family:var(--ft);font-size:12.5px;line-height:1.2;letter-spacing:.03em;text-transform:uppercase;overflow-wrap:break-word;hyphens:auto;max-width:100%}
+.cat.rg .rt{display:flex;flex-direction:column;gap:8px;min-width:0}
+.cat.rg .pts{align-self:flex-end;display:flex;align-items:baseline;gap:5px;font-family:var(--ft);color:var(--gold2);line-height:1;text-shadow:0 2px 0 rgba(0,0,0,.45)}
+.cat.rg .pts b{font-size:34px;font-weight:900}
+.cat.rg .pts b.neg{color:#ff9a8e}
+.cat.rg .pts small{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--mute);text-shadow:none}
+.cat.rg .st{grid-template-columns:46px minmax(0,1fr) 46px;gap:6px}
+.cat.rg .st .b{width:46px;height:46px}
+.cat.rg .st input{padding:10px 2px}
+.cat.rg .h{grid-column:1/-1;margin-top:0;font-size:14.5px;line-height:1.3;padding:0 2px}
+
+/* ===== Ciencia: misma estructura que el resto ===== */
+.cat.rg.sci{grid-template-columns:116px minmax(0,1fr)}
+.cat.rg.sci .ci{width:104px;height:104px}
+.cat.rg.sci .h{text-align:center}
+.cat.rg.sci .rt{gap:8px}
+.srow{display:grid;grid-template-columns:70px minmax(0,1fr);gap:6px;align-items:center}
+.srow span{font-size:14.5px;color:var(--mute);line-height:1.1}
+.cat.rg .srow .st{grid-template-columns:38px minmax(0,1fr) 38px;gap:4px}
+.cat.rg .srow .st .b{width:38px;height:42px;font-size:20px}
+.cat.rg .srow .st input{padding:9px 2px;font-size:18px;min-width:0}
+.cat.rg .pts small.gr{margin-right:auto;padding-right:8px;font-size:12.5px;letter-spacing:.04em;color:var(--gold);font-weight:700;white-space:nowrap}
+@media (max-width:370px){.cat.rg.sci{grid-template-columns:100px minmax(0,1fr)}.cat.rg.sci .ci{width:90px;height:90px}.srow{grid-template-columns:64px minmax(0,1fr)}.srow span{font-size:13.5px}.cat.rg .srow .st .b{width:34px}.cat.rg .srow .st{grid-template-columns:34px minmax(0,1fr) 34px}}
 </style>
 </head>
 <body>
@@ -183,6 +218,8 @@ function lget(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lset(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 let LIC=validKey(lget(LKEY)),TRIAL=parseInt(lget(TKEY))||0;
 const left=()=>Math.max(0,FREE_GAMES-TRIAL);
+const ICON={wonder:'maravilla',coins:'monedas',blue:'azules',yellow:'amarillas',sci:'ciencia',purple:'moradas',mil:'militar',fleet:'flota',island:'isla',naval:'naval',black:'negras',debt:'deuda',penal:'penalizacion',leaders:'lideres'};
+const ico=(k,cl)=>ICON[k]?`<img class="${cl}" src="iconos/${ICON[k]}.webp?v=2" alt="" width="56" height="56" decoding="async">`:'';
 function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 let S=load()||{screen:'setup',n:4,cur:0,exp:{armada:false,cities:false,leaders:false,edifice:false},players:[]};
@@ -230,9 +267,9 @@ function scoreView(){const ps=P();const p=ps[S.cur];
  const chips=ps.map((q,i)=>`<button class="chip ${i===S.cur?'on':''}" data-act="tab" data-i="${i}"><div class="rn">${RN[i+1]}</div><div class="nm">${esc(nm(q,i))}</div><div class="tt" id="ct${i}">${score(q).t}</div></button>`).join('');
  const rows=CATS.filter(on).map(c=>{
   let body;
-  if(c.sci)body=`<div class="tri">${[['st','Tablilla'],['sc','Compás'],['sg','Engranaje']].map(([k,l])=>`<div><label>${l}</label>${stp(k,num(p,k))}</div>`).join('')}</div>`;
+  if(c.sci)body=[['st','Tablilla'],['sc','Compás'],['sg','Engranaje']].map(([k,l])=>`<div class="srow"><span>${l}</span>${stp(k,num(p,k))}</div>`).join('');
   else body=stp(c.k,num(p,c.k),c.neg);
-  return `<div class="cat" style="border-left-color:${c.c}"><div class="hd"><b>${c.l}</b><i id="pt-${c.k}"></i></div>${c.h?`<div class="h">${c.h}</div>`:''}${body}</div>`}).join('');
+  return `<div class="cat rg${c.sci?' sci':''}" style="border-left-color:${c.c}"><div class="lf">${ico(c.k,'ci')}<b>${c.l}</b></div><div class="rt"><div class="pts" id="pt-${c.k}"></div>${body}</div>${c.h?`<div class="h">${c.h}</div>`:''}</div>`}).join('');
  const last=S.cur===ps.length-1;
  return head+`<div class="chips">${chips}</div>
  <div class="total"><b id="who">${esc(nm(p,S.cur))}</b><i id="tot">0</i></div>${rows}
@@ -241,8 +278,8 @@ function scoreView(){const ps=P();const p=ps[S.cur];
 function live(){const ps=P();const p=ps[S.cur];const s=score(p);
  ps.forEach((q,i)=>{const e=document.getElementById('ct'+i);if(e)e.textContent=score(q).t});
  const t=document.getElementById('tot');if(t)t.textContent=s.t;
- for(const c of CATS){const e=document.getElementById('pt-'+c.k);if(e&&c.k in s.r)e.textContent=s.r[c.k]+' pts'}
- const sc=document.getElementById('pt-sci');if(sc){const a=num(p,'st'),b=num(p,'sc'),g=num(p,'sg'),m=Math.min(a,b,g);sc.textContent=s.r.sci+' pts'+(m?' ('+m+(m>1?' grupos':' grupo')+')':'')}}
+ for(const c of CATS){const e=document.getElementById('pt-'+c.k);if(e&&c.k in s.r)e.innerHTML='<b'+(s.r[c.k]<0?' class="neg"':'')+'>'+s.r[c.k]+'</b><small>pts</small>'}
+ const sc=document.getElementById('pt-sci');if(sc){const a=num(p,'st'),b=num(p,'sc'),g=num(p,'sg'),m=Math.min(a,b,g);sc.innerHTML=(m?'<small class="gr">'+m+(m>1?' grupos':' grupo')+'</small>':'')+'<b>'+s.r.sci+'</b><small>pts</small>'}}
 function results(){const r=ranking();const top=r.filter(o=>o.pos===1);
  const cats=CATS.filter(on);
  const win=top.length>1?`Empate: ${top.map(o=>esc(nm(o.p,o.i))).join(' y ')}`:esc(nm(top[0].p,top[0].i));
@@ -250,7 +287,7 @@ function results(){const r=ranking();const top=r.filter(o=>o.pos===1);
  ${r.map(o=>`<div class="rk"><div class="p">${RN[o.pos]}</div><div class="n">${esc(nm(o.p,o.i))}<small>${o.co} monedas</small></div><div class="t">${o.s.t}</div></div>`).join('')}
  <p style="color:var(--mute);font-size:15px;margin:4px 2px 0">En caso de empate gana quien tenga más monedas; si siguen igualados, comparten la victoria.</p>
  <h2>Desglose</h2><div class="tw"><table><tr><th></th>${r.map(o=>`<th>${esc(nm(o.p,o.i))}</th>`).join('')}</tr>
- ${cats.map(c=>`<tr style="--c:${c.c}"><td>${c.l}</td>${r.map(o=>{const v=o.s.r[c.k];return `<td class="${v<0?'neg':''}">${v}</td>`}).join('')}</tr>`).join('')}
+ ${cats.map(c=>`<tr style="--c:${c.c}"><td>${ico(c.k,'ti')}${c.l}</td>${r.map(o=>{const v=o.s.r[c.k];return `<td class="${v<0?'neg':''}">${v}</td>`}).join('')}</tr>`).join('')}
  <tr class="tot"><td>Total</td>${r.map(o=>`<td>${o.s.t}</td>`).join('')}</tr></table></div>
  <div style="display:grid;gap:8px;margin-top:18px"><button class="btn" data-act="back">Volver a las puntuaciones</button><button class="btn ghost" data-act="reset">Nueva partida</button></div>${foot}`}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
