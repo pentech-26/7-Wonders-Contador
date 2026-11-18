@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0f1a2e">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png?v=4">
@@ -190,12 +190,45 @@ a.btn{display:block;text-align:center;text-decoration:none}
 .cat.rg .pts small{color:#5a3f0b;font-size:13px}
 .cat.rg .pts small.gr{margin-right:auto;padding-right:8px;color:#5a3f0b}
 .cat.rg.sci .pts{justify-content:flex-end}
-@media (max-width:370px){.cat.rg.sci{grid-template-columns:100px minmax(0,1fr)}.cat.rg.sci .ci{width:90px;height:90px}.srow{grid-template-columns:64px minmax(0,1fr)}.srow span{font-size:13.5px}.cat.rg .srow .st .b{width:34px}.cat.rg .srow .st{grid-template-columns:34px minmax(0,1fr) 34px}}
+
+/* ===== Ciencia centrada + mejor contraste ===== */
+.cat.rg.sci .pts{justify-content:center;flex-wrap:wrap;row-gap:0;padding-top:4px}
+.cat.rg.sci .pts small.gr{order:-1;flex:0 0 100%;margin:0 0 3px;padding:0;text-align:center;font-size:12.5px;line-height:1.1;color:#4a3208;font-weight:700;letter-spacing:.05em;min-height:14px}
+.cat .h{color:#d6deee}
+.srow span{color:#efe6cc;font-size:14px;white-space:nowrap;letter-spacing:0}
+.srow{grid-template-columns:72px minmax(0,1fr)}
+@media (max-width:370px){.cat.rg.sci{grid-template-columns:100px minmax(0,1fr)}.cat.rg.sci .ci{width:90px;height:90px}.srow{grid-template-columns:66px minmax(0,1fr)}.srow span{font-size:12.5px}.cat.rg .srow .st .b{width:34px}.cat.rg .srow .st{grid-template-columns:34px minmax(0,1fr) 34px}}
+
+/* ===== Sin zoom, aviso legal y solo vertical ===== */
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-touch-callout:none}
+input,.legal-box{-webkit-touch-callout:default}
+.foot .lg{display:block;margin:12px auto 0;padding:8px 14px;background:none;border:1px solid rgba(212,170,85,.45);border-radius:5px;color:var(--gold2);font-family:var(--ft);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.foot .lg:active{background:rgba(212,170,85,.15)}
+#legal{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(5,10,20,.8);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+#legal.on{display:flex}
+.legal-box{position:relative;width:100%;max-width:520px;max-height:84vh;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.18)),var(--panel);border:2px solid var(--gold);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.legal-box h3{margin:0;padding:16px 18px 10px;font-family:var(--ft);font-size:19px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold2);text-align:center;border-bottom:1px solid rgba(212,170,85,.35)}
+.legal-box .lb{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 18px;font-size:16px;line-height:1.4;color:#e6ebf5}
+.legal-box .lb h4{margin:12px 0 3px;font-family:var(--ft);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold2)}
+.legal-box .lb p{margin:0}
+.legal-box .lv{text-align:center;color:var(--mute);font-size:14px;letter-spacing:.1em;margin-top:12px}
+.legal-box .btn{margin:0;border-radius:0 0 5px 5px;border-width:2px 0 0}
+#rot{position:fixed;inset:0;z-index:10000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:var(--bg);color:var(--gold2);text-align:center;padding:20px;font-family:var(--ft)}
+#rot b{font-size:22px;letter-spacing:.1em;text-transform:uppercase}
+#rot span{font-family:var(--fb);font-size:17px;color:var(--mute)}
+#rot .ph{width:46px;height:78px;border:4px solid var(--gold2);border-radius:9px;position:relative;animation:rotph 2.4s ease-in-out infinite}
+#rot .ph::after{content:"";position:absolute;left:50%;bottom:5px;width:12px;height:3px;margin-left:-6px;border-radius:2px;background:var(--gold2)}
+#rot .ar{font-size:30px;color:var(--red);line-height:1}
+@keyframes rotph{0%,20%{transform:rotate(90deg)}70%,100%{transform:rotate(0)}}
+@media (prefers-reduced-motion:reduce){#rot .ph{animation:none}}
+@media (orientation:landscape) and (max-height:540px){#rot{display:flex}}
 </style>
 </head>
 <body>
 <div id="splash" role="img" aria-label="7 Wonders Contador"><img src="splash.webp?v=1" alt="" decoding="async" fetchpriority="high"><div id="splashHint" class="tap">Toca para entrar</div></div>
 <div class="wrap" id="app"></div>
+<div id="rot" role="alert"><div class="ph"></div><div class="ar">&#8634;</div><b>Gira el móvil</b><span>7 Wonders se usa en vertical</span></div>
+<div id="legal" role="dialog" aria-modal="true" aria-label="Aviso legal"><div class="legal-box"><h3>Aviso legal</h3><div class="lb" id="legalTxt"></div><button class="btn" data-act="legalx">Cerrar</button></div></div>
 <script>
 let askReset=false,askT=0;
 const KEY='sw7-contador-v1';
@@ -255,7 +288,7 @@ function render(){const A=document.getElementById('app');
  window.scrollTo(0,0);save()}
 const head='<header class="top"><div class="key"></div><h1>7 WONDERS<small>CONTADOR DE PUNTOS</small></h1><div class="key"></div></header>';
 const RN=['','I','II','III','IV','V','VI','VII'];
-const foot='<div class="foot">Creado por PenTech<p class="legal">7 Wonders es un juego de mesa editado en España por Asmodee Spain. Este contador es una herramienta no oficial, creada por PenTech para facilitar el recuento de puntos; no está afiliado, patrocinado ni avalado por los autores ni por los editores del juego. Los nombres, marcas y expansiones (Armada, Cities, Leaders y Edifice) pertenecen a sus respectivos propietarios.</p><div class="ver">v'+APP_VERSION+'</div></div>';
+const foot='<div class="foot">Creado por PenTech<button class="lg" data-act="legal">Aviso legal · v'+APP_VERSION+'</button></div>';
 function setup(){const ps=P();
  return head+`<h2>Jugadores</h2><div class="panel"><div class="row"><b>Número de jugadores</b><div class="st" style="width:170px;grid-template-columns:44px 1fr 44px"><button class="b" data-act="n" data-d="-1" style="width:44px;height:44px">−</button><b style="text-align:center;font-size:22px">${S.n}</b><button class="b" data-act="n" data-d="1" style="width:44px;height:44px">+</button></div></div>
  <div class="names">${ps.map((p,i)=>`<input type="text" autocomplete="off" data-name="${i}" placeholder="Jugador ${i+1}" value="${esc(p.name)}" maxlength="18">`).join('')}</div></div>
@@ -288,7 +321,7 @@ function live(){const ps=P();const p=ps[S.cur];const s=score(p);
  ps.forEach((q,i)=>{const e=document.getElementById('ct'+i);if(e)e.textContent=score(q).t});
  const t=document.getElementById('tot');if(t)t.textContent=s.t;
  for(const c of CATS){const e=document.getElementById('pt-'+c.k);if(e&&c.k in s.r)e.innerHTML='<b'+(s.r[c.k]<0?' class="neg"':'')+'>'+s.r[c.k]+'</b><small>pts</small>'}
- const sc=document.getElementById('pt-sci');if(sc){const a=num(p,'st'),b=num(p,'sc'),g=num(p,'sg'),m=Math.min(a,b,g);sc.innerHTML=(m?'<small class="gr">'+m+(m>1?' grupos':' grupo')+'</small>':'')+'<b>'+s.r.sci+'</b><small>pts</small>'}}
+ const sc=document.getElementById('pt-sci');if(sc){const a=num(p,'st'),b=num(p,'sc'),g=num(p,'sg'),m=Math.min(a,b,g);sc.innerHTML='<small class="gr">'+(m?m+(m>1?' grupos completos':' grupo completo'):'&nbsp;')+'</small>'+'<b>'+s.r.sci+'</b><small>pts</small>'}}
 function results(){const r=ranking();const top=r.filter(o=>o.pos===1);
  const cats=CATS.filter(on);
  const win=top.length>1?`Empate: ${top.map(o=>esc(nm(o.p,o.i))).join(' y ')}`:esc(nm(top[0].p,top[0].i));
@@ -299,7 +332,25 @@ function results(){const r=ranking();const top=r.filter(o=>o.pos===1);
  ${cats.map(c=>`<tr style="--c:${c.c}"><td>${ico(c.k,'ti')}${c.l}</td>${r.map(o=>{const v=o.s.r[c.k];return `<td class="${v<0?'neg':''}">${v}</td>`}).join('')}</tr>`).join('')}
  <tr class="tot"><td>Total</td>${r.map(o=>`<td>${o.s.t}</td>`).join('')}</tr></table></div>
  <div style="display:grid;gap:8px;margin-top:18px"><button class="btn" data-act="back">Volver a las puntuaciones</button><button class="btn ghost" data-act="reset">Nueva partida</button></div>${foot}`}
+
+const LEGAL_HTML=()=>`<h4>Sobre el juego</h4><p>«7 Wonders» es un juego de mesa de Antoine Bauza, publicado originalmente por Repos Production y editado en España por Asmodee Spain. Sus expansiones (Armada, Cities, Leaders y Edifice) y todos los nombres, marcas e ilustraciones del juego pertenecen a sus respectivos propietarios.</p>
+<h4>Herramienta no oficial</h4><p>Este contador es una herramienta independiente creada por PenTech para facilitar el recuento de puntos. No está afiliado, patrocinado ni avalado por los autores ni por los editores del juego, y no reproduce sus textos, reglas completas ni ilustraciones.</p>
+<h4>Licencia de uso</h4><p>La app incluye ${FREE_GAMES} partidas de prueba. La clave de licencia desbloquea su uso sin límite; no supone la venta del juego ni de ninguno de sus contenidos.</p>
+<h4>Privacidad</h4><p>La app no recoge, envía ni comparte datos personales y no usa cookies ni analítica. Los nombres, la partida y la clave se guardan solo en tu dispositivo. Lo único que se descarga de fuera son las tipografías, desde Google Fonts, al abrir la app con conexión.</p>
+<h4>Créditos</h4><p>Diseño, ilustraciones, sonido y código © 2026 PenTech. Tipografías Cinzel y Alegreya Sans, con licencia SIL Open Font License 1.1.</p>
+<div class="lv">Versión ${APP_VERSION}</div>`;
+function legalOpen(){const l=document.getElementById('legal');document.getElementById('legalTxt').innerHTML=LEGAL_HTML();l.classList.add('on');document.getElementById('legalTxt').scrollTop=0}
+function legalClose(){document.getElementById('legal').classList.remove('on')}
+document.getElementById('legal').addEventListener('click',e=>{if(e.target.id==='legal')legalClose()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')legalClose()});
+/* sin zoom */
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
+document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});
+document.addEventListener('dblclick',e=>e.preventDefault());
+/* solo vertical (Android instalado; en iPhone sale el aviso) */
+try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('portrait').catch(()=>{})}catch(e){}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+ if(a==='legal'){legalOpen();return}if(a==='legalx'){legalClose();return}
  if(a==='step'){const k=b.dataset.k;const i=document.querySelector(`input[data-f="${k}"]`);const c=CATS.find(x=>x.k===k);const neg=c&&c.neg;
   let v=(parseInt(i.value)||0)+parseInt(b.dataset.d);if(!neg&&v<0)v=0;i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}));return}
  if(a==='n'){S.n=Math.min(7,Math.max(3,S.n+parseInt(b.dataset.d)));render()}
