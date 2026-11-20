@@ -202,7 +202,9 @@ a.btn{display:block;text-align:center;text-decoration:none}
 /* ===== Sin zoom, aviso legal y solo vertical ===== */
 html,body{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-touch-callout:none}
 input,.legal-box{-webkit-touch-callout:default}
-.foot .lg{display:block;margin:12px auto 0;padding:8px 14px;background:none;border:1px solid rgba(212,170,85,.45);border-radius:5px;color:var(--gold2);font-family:var(--ft);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.foot .fl{font-size:14px;letter-spacing:.06em;color:var(--mute)}
+.foot .ver{margin-top:10px}
+.foot .lg{display:block;margin:10px auto 0;padding:8px 14px;background:none;border:1px solid rgba(212,170,85,.45);border-radius:5px;color:var(--gold2);font-family:var(--ft);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
 .foot .lg:active{background:rgba(212,170,85,.15)}
 #legal{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(5,10,20,.8);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 #legal.on{display:flex}
@@ -283,7 +285,7 @@ const CATS=[
 {k:'penal',l:'Penalización de edificios',c:'#9b59b6',e:['edifice'],sub:1,h:'Puntos que pierdes por no participar'},
 {k:'leaders',l:'Líderes',c:'#5fa8d3',e:['leaders']}];
 /* ===== Licencia ===== */
-const APP_VERSION='1.0';                              // versión de la app (se muestra al final)
+const APP_VERSION='1.1';                              // versión de la app (se muestra al final)
 const FREE_HIST=3;                                    // partidas que se pueden guardar en el archivo sin clave
 const FREE_MAX=4;                                     // jugadores máximos en la versión gratuita (de pago: hasta 7)
 const MASTER_KEY='K7QM-4PXD';                         // CLAVE ÚNICA: cámbiala por la tuya (solo letras A-Z y números)
@@ -345,7 +347,7 @@ function render(){const A=document.getElementById('app');
  window.scrollTo(0,0);save()}
 const head='<header class="top"><div class="key"></div><h1>7 WONDERS<small>CONTADOR DE PUNTOS</small></h1><div class="key"></div></header>';
 const RN=['','I','II','III','IV','V','VI','VII'];
-const foot='<div class="foot">Creado por PenTech<button class="lg" data-act="legal">Aviso legal · v'+APP_VERSION+'</button></div>';
+const foot='<div class="foot"><div class="fl">Contador no oficial · © 2026 PenTech</div><button class="lg" data-act="legal">Aviso legal</button><div class="ver">v'+APP_VERSION+'</div></div>';
 function setup(){const ps=P();
  return head+`<h2>Jugadores</h2><div class="panel"><div class="row"><b>Número de jugadores</b><div class="st" style="width:170px;grid-template-columns:44px 1fr 44px"><button class="b" data-act="n" data-d="-1" style="width:44px;height:44px">−</button><b style="text-align:center;font-size:22px">${S.n}</b><button class="b${!LIC&&S.n>=FREE_MAX?' lk':''}" data-act="n" data-d="1" style="width:44px;height:44px" aria-label="Más jugadores">${!LIC&&S.n>=FREE_MAX?LOCK:'+'}</button></div></div>
  <div class="names">${ps.map((p,i)=>`<input type="text" autocomplete="off" data-name="${i}" placeholder="Jugador ${i+1}" value="${esc(p.name)}" maxlength="18">`).join('')}</div></div>
@@ -388,12 +390,13 @@ function results(){const r=ranking();const top=r.filter(o=>o.pos===1);
  <tr class="tot"><td>Total</td>${r.map(o=>`<td>${o.s.t}</td>`).join('')}</tr></table></div>
  <div style="display:grid;gap:8px;margin-top:18px"><button class="btn" data-act="back">Volver a las puntuaciones</button><button class="btn ghost" data-act="arch">Archivo de partidas</button><button class="btn ghost" data-act="reset">Nueva partida</button></div>${foot}`}
 
-const LEGAL_HTML=()=>`<h4>Sobre el juego</h4><p>«7 Wonders» es un juego de mesa de Antoine Bauza, publicado originalmente por Repos Production y editado en España por Asmodee Spain. Sus expansiones (Armada, Cities, Leaders y Edifice) y todos los nombres, marcas e ilustraciones del juego pertenecen a sus respectivos propietarios.</p>
-<h4>Herramienta no oficial</h4><p>Este contador es una herramienta independiente creada por PenTech para facilitar el recuento de puntos. No está afiliado, patrocinado ni avalado por los autores ni por los editores del juego, y no reproduce sus textos, reglas completas ni ilustraciones.</p>
-<h4>Licencia de uso</h4><p>La versión gratuita incluye el juego base con 3 o 4 jugadores. La clave de licencia desbloquea de 5 a 7 jugadores y las expansiones Armada, Cities, Leaders y Edifice; da acceso a esta app y no supone la venta del juego ni de ninguno de sus contenidos.</p>
-<h4>Privacidad</h4><p>La app no recoge, envía ni comparte datos personales y no usa cookies ni analítica. Los nombres, la partida y la clave se guardan solo en tu dispositivo. Lo único que se descarga de fuera son las tipografías, desde Google Fonts, al abrir la app con conexión.</p>
-<h4>Créditos</h4><p>Diseño, ilustraciones, sonido y código © 2026 PenTech. Tipografías Cinzel y Alegreya Sans, con licencia SIL Open Font License 1.1.</p>
-<div class="lv">Versión ${APP_VERSION}</div>`;
+const LEGAL_HTML=()=>`<h4>Sobre el juego</h4><p>«7 Wonders» es un juego de mesa de Antoine Bauza, publicado originalmente por Repos Production y editado en España por Asmodee Spain. Sus expansiones (Armada, Cities, Leaders y Edifice), así como el nombre, las marcas, los componentes y las ilustraciones del juego, pertenecen a sus respectivos propietarios.</p>
+<h4>Herramienta no oficial</h4><p>Este contador es una herramienta independiente creada por PenTech para facilitar el recuento de puntos. No está afiliado, patrocinado ni avalado por los autores ni por los editores del juego, y no sustituye al reglamento.</p>
+<h4>Versión gratis y versión completa</h4><p>La versión gratis no tiene anuncios e incluye el juego base con 3 o 4 jugadores, la ciencia calculada y hasta ${FREE_HIST} partidas guardadas en el archivo. La versión completa (de 5 a 7 jugadores, las expansiones Armada, Cities, Leaders y Edifice y el archivo sin límite) se desbloquea con una clave que se compra en la tienda de PenTech en Buy Me a Coffee, con sus propias condiciones. La clave da acceso a la versión completa de la app, no al juego. El diseño, los iconos, las ilustraciones de la app y el código son de PenTech y no se pueden copiar, vender ni distribuir sin permiso.</p>
+<h4>Privacidad</h4><p>La app no pide registro y no recoge datos personales; no usa cookies, publicidad ni analítica. Los nombres, las partidas, el archivo y la clave activada se guardan solo en tu dispositivo. Se usa internet para descargar la app y las tipografías, que se cargan desde Google Fonts.</p>
+<h4>Créditos</h4><p>© 2026 PenTech. Tipografías Cinzel y Alegreya Sans, con licencia SIL Open Font License 1.1.</p>
+<h4>Contacto</h4><p>Instagram @pentech_26</p>
+<div class="lv">Contador de 7 Wonders · v${APP_VERSION}</div>`;
 function legalOpen(){const l=document.getElementById('legal');document.getElementById('legalTxt').innerHTML=LEGAL_HTML();l.classList.add('on');document.getElementById('legalTxt').scrollTop=0}
 function legalClose(){document.getElementById('legal').classList.remove('on')}
 document.getElementById('legal').addEventListener('click',e=>{if(e.target.id==='legal')legalClose()});
