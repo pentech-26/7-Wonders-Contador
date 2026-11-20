@@ -1,4 +1,4 @@
-const CACHE='sw7-contador-v36';
+const CACHE='sw7-contador-v39';
 const FILES=['./','./index.html','./manifest.json','./icon-192.png?v=4','./icon-512.png?v=4','./apple-touch-icon.png?v=4','./splash.webp?v=2','./fanfare.mp3?v=2','./iconos/maravilla.webp?v=2','./iconos/monedas.webp?v=2','./iconos/azules.webp?v=2','./iconos/amarillas.webp?v=2','./iconos/ciencia.webp?v=2','./iconos/exp-armada.webp?v=1','./iconos/exp-cities.webp?v=1','./iconos/exp-edifice.webp?v=1','./iconos/exp-leaders.webp?v=1','./iconos/moradas.webp?v=2','./iconos/militar.webp?v=2','./iconos/flota.webp?v=2','./iconos/isla.webp?v=2','./iconos/naval.webp?v=2','./iconos/negras.webp?v=2','./iconos/deuda.webp?v=2','./iconos/penalizacion.webp?v=2','./iconos/lideres.webp?v=2'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith('sw7-contador-')&&x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});

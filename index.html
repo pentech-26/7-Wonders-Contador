@@ -247,6 +247,15 @@ input,.legal-box{-webkit-touch-callout:default}
 .hd2 .hn{flex:1;font-weight:700}
 .hd2 .ht{font-family:var(--ft);font-weight:900;font-size:20px}
 .hd2 .tw{margin-top:10px}
+
+/* ===== Versión gratuita: bloqueos ===== */
+.b.lk{color:var(--gold2);display:inline-flex;align-items:center;justify-content:center}
+.exp.lock .lkb{flex:none;width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:var(--gold2)}
+.exp.lock .ei{opacity:.9}
+.exp.lock b{opacity:.95}
+
+.hnote{margin-bottom:12px;text-align:center;color:#d6deee;font-size:16px;line-height:1.35}
+.hnote .btn{margin-top:10px;width:100%}
 </style>
 </head>
 <body>
@@ -275,7 +284,8 @@ const CATS=[
 {k:'leaders',l:'Líderes',c:'#5fa8d3',e:['leaders']}];
 /* ===== Licencia ===== */
 const APP_VERSION='1.0';                              // versión de la app (se muestra al final)
-const FREE_GAMES=3;                                   // partidas gratuitas de prueba
+const FREE_HIST=3;                                    // partidas que se pueden guardar en el archivo sin clave
+const FREE_MAX=4;                                     // jugadores máximos en la versión gratuita (de pago: hasta 7)
 const MASTER_KEY='K7QM-4PXD';                         // CLAVE ÚNICA: cámbiala por la tuya (solo letras A-Z y números)
 const BUY_URL='https://buymeacoffee.com/pentech/e/592692'; // dónde se compra la clave
 const LKEY='sw7-lic-v2',TKEY='sw7-trial-v1';
@@ -283,14 +293,16 @@ const normKey=k=>String(k||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 const validKey=k=>!!normKey(k)&&normKey(k)===normKey(MASTER_KEY);
 function lget(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lset(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-let LIC=validKey(lget(LKEY)),TRIAL=parseInt(lget(TKEY))||0;
-const left=()=>Math.max(0,FREE_GAMES-TRIAL);
+let LIC=validKey(lget(LKEY));
+const LOCK='<svg class="lksvg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><rect x="4.5" y="10" width="15" height="11" rx="2.5" fill="currentColor"/></svg>';
 const ICON={wonder:'maravilla',coins:'monedas',blue:'azules',yellow:'amarillas',sci:'ciencia',purple:'moradas',mil:'militar',fleet:'flota',island:'isla',naval:'naval',black:'negras',debt:'deuda',penal:'penalizacion',leaders:'lideres'};
 const ico=(k,cl)=>ICON[k]?`<img class="${cl}" src="iconos/${ICON[k]}.webp?v=2" alt="" width="56" height="56" decoding="async">`:'';
 function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 let S=load()||{screen:'setup',n:4,cur:0,exp:{armada:false,cities:false,leaders:false,edifice:false},players:[]};
-if(!LIC&&(S.screen==='setup'||S.screen==='license'))S.screen='license';
+function clampFree(){if(!LIC){S.n=Math.min(S.n,FREE_MAX);for(const k in S.exp)S.exp[k]=false}}
+clampFree();
+if(S.screen==='license'&&LIC)S.screen='setup';
 function P(){while(S.players.length<S.n)S.players.push({name:'',v:{}});return S.players.slice(0,S.n)}
 const nm=(p,i)=>p.name.trim()||('Jugador '+(i+1));
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -315,7 +327,7 @@ function hload(){try{const h=JSON.parse(localStorage.getItem(HKEY));return Array
 function hsave(h){try{localStorage.setItem(HKEY,JSON.stringify(h))}catch(e){}}
 function saveHist(){const r=ranking(),H=hload();if(!S.gid)S.gid=Date.now().toString(36);
  const e={id:S.gid,t:Date.now(),exp:Object.keys(EXP).filter(k=>S.exp[k]),cats:CATS.filter(on).map(c=>c.k),pl:r.map(o=>({n:nm(o.p,o.i),t:o.s.t,pos:o.pos,co:o.co,r:o.s.r}))};
- const i=H.findIndex(x=>x.id===e.id);if(i>=0){e.t=H[i].t;H[i]=e}else H.unshift(e);hsave(H.slice(0,200))}
+ const i=H.findIndex(x=>x.id===e.id);if(i>=0){e.t=H[i].t;H[i]=e;S.unsaved=false}else if(!LIC&&H.length>=FREE_HIST){S.unsaved=true;return false}else{H.unshift(e);S.unsaved=false}hsave(H.slice(0,200));return true}
 let cf={k:null,t:0,o:''};
 function dbl(b,key,msg,fn){if(cf.k!==key){cf.k=key;cf.o=b.textContent;b.textContent=msg;clearTimeout(cf.t);cf.t=setTimeout(()=>{cf.k=null;if(b.isConnected)b.textContent=cf.o},4000);return}clearTimeout(cf.t);cf.k=null;fn()}
 function hcard(h){const d=new Date(h.t).toLocaleString('es-ES',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -324,9 +336,10 @@ function hcard(h){const d=new Date(h.t).toLocaleString('es-ES',{day:'numeric',mo
  const det=open?`<div class="hd2">${h.pl.map(p=>`<div class="hr"><span class="hp">${RN[p.pos]||p.pos}</span><span class="hn">${esc(p.n)}</span><span class="ht">${p.t}</span></div>`).join('')}
  <div class="tw"><table><tr><th></th>${h.pl.map(p=>`<th>${esc(p.n)}</th>`).join('')}</tr>${h.cats.map(k=>{const c=CATS.find(x=>x.k===k);if(!c)return'';return `<tr style="--c:${c.c}"><td>${c.l}</td>${h.pl.map(p=>{const v=p.r[k]||0;return `<td class="${v<0?'neg':''}">${v}</td>`}).join('')}</tr>`}).join('')}<tr class="tot"><td>Total</td>${h.pl.map(p=>`<td>${p.t}</td>`).join('')}</tr></table></div></div>`:'';
  return `<div class="hcard"><div class="hh"><b>${d}</b><span>${ex} · ${h.pl.length} jugadores</span></div><div class="hw"><small>${w.length>1?'Empate':'Ganador'}</small> ${w.map(p=>esc(p.n)).join(' y ')} <i>${w[0].t} pts</i></div>${det}
- <div class="hb"><button class="btn ghost sm" data-act="hview" data-id="${h.id}">${open?'Ocultar':'Ver'}</button><button class="btn ghost sm" data-act="hdel" data-id="${h.id}">Borrar</button></div></div>`}
+ <div class="hb"><button class="btn ghost sm" data-act="hview" data-id="${h.id}">${open?'Ocultar':'Ver'}</button>${LIC?`<button class="btn ghost sm" data-act="hdel" data-id="${h.id}">Borrar</button>`:''}</div></div>`}
 function archiveView(){const H=hload();
- return head+`<h2>Archivo de partidas</h2>`+(H.length?H.map(hcard).join('')+`<button class="btn ghost" data-act="hclear" style="margin-top:6px">Vaciar archivo</button>`:`<div class="panel" style="text-align:center;color:#d6deee">Aún no hay partidas guardadas.<br>Se guardan solas al pulsar «Ver resultados».</div>`)+`<button class="btn" data-act="archback" style="margin-top:12px">Volver</button>${foot}`}
+ const nota=LIC?'':`<div class="panel hnote">Versión gratuita: se guardan hasta ${FREE_HIST} partidas (${Math.min(H.length,FREE_HIST)}/${FREE_HIST}). ${H.length>=FREE_HIST?'Desbloquea la versión completa para guardar más.':'Con la clave, sin límite.'}<button class="btn ghost sm" data-act="lic">Desbloquear</button></div>`;
+ return head+`<h2>Archivo de partidas</h2>`+nota+(H.length?H.map(hcard).join('')+(LIC?`<button class="btn ghost" data-act="hclear" style="margin-top:6px">Vaciar archivo</button>`:''):`<div class="panel" style="text-align:center;color:#d6deee">Aún no hay partidas guardadas.<br>Se guardan solas al pulsar «Ver resultados».</div>`)+`<button class="btn" data-act="archback" style="margin-top:12px">Volver</button>${foot}`}
 function render(){const A=document.getElementById('app');
  if(S.screen==='setup')A.innerHTML=setup();else if(S.screen==='score')A.innerHTML=scoreView();else if(S.screen==='license')A.innerHTML=LIC?setup():licenseView();else if(S.screen==='archive')A.innerHTML=archiveView();else A.innerHTML=results();
  window.scrollTo(0,0);save()}
@@ -334,21 +347,19 @@ const head='<header class="top"><div class="key"></div><h1>7 WONDERS<small>CONTA
 const RN=['','I','II','III','IV','V','VI','VII'];
 const foot='<div class="foot">Creado por PenTech<button class="lg" data-act="legal">Aviso legal · v'+APP_VERSION+'</button></div>';
 function setup(){const ps=P();
- return head+`<h2>Jugadores</h2><div class="panel"><div class="row"><b>Número de jugadores</b><div class="st" style="width:170px;grid-template-columns:44px 1fr 44px"><button class="b" data-act="n" data-d="-1" style="width:44px;height:44px">−</button><b style="text-align:center;font-size:22px">${S.n}</b><button class="b" data-act="n" data-d="1" style="width:44px;height:44px">+</button></div></div>
+ return head+`<h2>Jugadores</h2><div class="panel"><div class="row"><b>Número de jugadores</b><div class="st" style="width:170px;grid-template-columns:44px 1fr 44px"><button class="b" data-act="n" data-d="-1" style="width:44px;height:44px">−</button><b style="text-align:center;font-size:22px">${S.n}</b><button class="b${!LIC&&S.n>=FREE_MAX?' lk':''}" data-act="n" data-d="1" style="width:44px;height:44px" aria-label="Más jugadores">${!LIC&&S.n>=FREE_MAX?LOCK:'+'}</button></div></div>
  <div class="names">${ps.map((p,i)=>`<input type="text" autocomplete="off" data-name="${i}" placeholder="Jugador ${i+1}" value="${esc(p.name)}" maxlength="18">`).join('')}</div></div>
- <h2>Expansiones</h2><p style="color:#d6deee;font-size:15px;margin:-2px 2px 10px">El juego base siempre está incluido.</p>${Object.entries(EXP).map(([k,e])=>`<label class="exp" style="border-left-color:${e.c};--eg:${e.c}55"><input type="checkbox" data-exp="${k}" ${S.exp[k]?'checked':''}><div><b>${e.n}</b><span>${e.d}</span></div><img class="ei" src="iconos/exp-${k}.webp?v=1" alt="" width="72" height="72" decoding="async"></label>`).join('')}
+ <h2>Expansiones</h2><p style="color:#d6deee;font-size:15px;margin:-2px 2px 10px">El juego base siempre está incluido.${LIC?'':' Las expansiones y de 5 a 7 jugadores se desbloquean con la clave.'}</p>${Object.entries(EXP).map(([k,e])=>`<label class="exp${LIC?'':' lock'}" style="border-left-color:${e.c};--eg:${e.c}55">${LIC?`<input type="checkbox" data-exp="${k}" ${S.exp[k]?'checked':''}>`:`<span class="lkb">${LOCK}</span>`}<div><b>${e.n}</b><span>${e.d}</span></div><img class="ei" src="iconos/exp-${k}.webp?v=1" alt="" width="72" height="72" decoding="async"></label>`).join('')}
  <div style="height:8px"></div>
  ${licPanel()}
  <button class="btn" data-act="start">Empezar a contar</button><button class="btn ghost" data-act="arch" style="margin-top:10px">Archivo de partidas</button>${foot}`}
-function licPanel(){return ''}
-function licenseView(){const l=left();
- const intro=l===FREE_GAMES?`Prueba gratis ${FREE_GAMES} partidas o introduce tu clave para desbloquear la versión completa.`:l>0?`Te ${l===1?'queda 1 partida gratuita':'quedan '+l+' partidas gratuitas'}. Introduce tu clave para desbloquear la versión completa.`:`Has usado tus ${FREE_GAMES} partidas gratuitas. Introduce tu clave para seguir contando sin límites.`;
- const trial=l>0?`<button class="btn ghost" data-act="licback">${l===FREE_GAMES?`Probar gratis · ${FREE_GAMES} partidas`:`Seguir probando · ${l===1?'queda 1 partida':'quedan '+l+' partidas'}`}</button>`:(S.counted?`<button class="btn ghost" data-act="licback">Volver</button>`:'');
- return head+`<h2>Acceso</h2><div class="panel lic"><p>${intro}</p>
+function licPanel(){return LIC?'':`<button class="btn ghost" data-act="lic" style="margin-bottom:10px">Desbloquear versión completa</button>`}
+function licenseView(){
+ return head+`<h2>Versión completa</h2><div class="panel lic"><p>La versión gratuita incluye el juego base con 3 o 4 jugadores y la ciencia calculada. Con la clave desbloqueas <b>de 5 a 7 jugadores</b> y las expansiones <b>Armada, Cities, Leaders y Edifice</b>.</p>
  <input type="text" id="licIn" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Escribe tu clave" maxlength="40">
  <div class="lerr" id="licErr" role="alert"></div>
  <button class="btn" data-act="activate">Activar clave</button></div>
- <div style="display:grid;gap:10px;margin-top:12px"><a class="btn buy" href="${BUY_URL}" target="_blank" rel="noopener">Comprar clave</a>${trial}</div>${foot}`}
+ <div style="display:grid;gap:10px;margin-top:12px"><a class="btn buy" href="${BUY_URL}" target="_blank" rel="noopener">Comprar clave</a><button class="btn ghost" data-act="licback">Volver</button></div>${foot}`}
 function scoreView(){const ps=P();const p=ps[S.cur];
  const chips=ps.map((q,i)=>`<button class="chip ${i===S.cur?'on':''}" data-act="tab" data-i="${i}"><div class="rn">${RN[i+1]}</div><div class="nm">${esc(nm(q,i))}</div><div class="tt" id="ct${i}">${score(q).t}</div></button>`).join('');
  const rows=CATS.filter(on).map(c=>{
@@ -372,14 +383,14 @@ function results(){const r=ranking();const top=r.filter(o=>o.pos===1);
  return head+`<div class="win"><span>${top.length>1?'Victoria compartida':'Ganador'}</span><b>${win}</b>${top[0].s.t} puntos</div>
  ${r.map(o=>`<div class="rk"><div class="p">${RN[o.pos]}</div><div class="n">${esc(nm(o.p,o.i))}<small>${o.co} monedas</small></div><div class="t">${o.s.t}</div></div>`).join('')}
  <p style="color:var(--mute);font-size:15px;margin:4px 2px 0">En caso de empate gana quien tenga más monedas; si siguen igualados, comparten la victoria.</p>
- <h2>Desglose</h2><div class="tw"><table><tr><th></th>${r.map(o=>`<th>${esc(nm(o.p,o.i))}</th>`).join('')}</tr>
+ ${S.unsaved&&!LIC?`<div class="panel hnote">Esta partida no se ha guardado: la versión gratuita guarda hasta ${FREE_HIST} partidas. Desbloquea la versión completa para guardar más.<button class="btn ghost sm" data-act="lic">Desbloquear</button></div>`:''}<h2>Desglose</h2><div class="tw"><table><tr><th></th>${r.map(o=>`<th>${esc(nm(o.p,o.i))}</th>`).join('')}</tr>
  ${cats.map(c=>`<tr style="--c:${c.c}"><td>${ico(c.k,'ti')}${c.l}</td>${r.map(o=>{const v=o.s.r[c.k];return `<td class="${v<0?'neg':''}">${v}</td>`}).join('')}</tr>`).join('')}
  <tr class="tot"><td>Total</td>${r.map(o=>`<td>${o.s.t}</td>`).join('')}</tr></table></div>
  <div style="display:grid;gap:8px;margin-top:18px"><button class="btn" data-act="back">Volver a las puntuaciones</button><button class="btn ghost" data-act="arch">Archivo de partidas</button><button class="btn ghost" data-act="reset">Nueva partida</button></div>${foot}`}
 
 const LEGAL_HTML=()=>`<h4>Sobre el juego</h4><p>«7 Wonders» es un juego de mesa de Antoine Bauza, publicado originalmente por Repos Production y editado en España por Asmodee Spain. Sus expansiones (Armada, Cities, Leaders y Edifice) y todos los nombres, marcas e ilustraciones del juego pertenecen a sus respectivos propietarios.</p>
 <h4>Herramienta no oficial</h4><p>Este contador es una herramienta independiente creada por PenTech para facilitar el recuento de puntos. No está afiliado, patrocinado ni avalado por los autores ni por los editores del juego, y no reproduce sus textos, reglas completas ni ilustraciones.</p>
-<h4>Licencia de uso</h4><p>La app incluye ${FREE_GAMES} partidas de prueba. La clave de licencia desbloquea su uso sin límite; no supone la venta del juego ni de ninguno de sus contenidos.</p>
+<h4>Licencia de uso</h4><p>La versión gratuita incluye el juego base con 3 o 4 jugadores. La clave de licencia desbloquea de 5 a 7 jugadores y las expansiones Armada, Cities, Leaders y Edifice; da acceso a esta app y no supone la venta del juego ni de ninguno de sus contenidos.</p>
 <h4>Privacidad</h4><p>La app no recoge, envía ni comparte datos personales y no usa cookies ni analítica. Los nombres, la partida y la clave se guardan solo en tu dispositivo. Lo único que se descarga de fuera son las tipografías, desde Google Fonts, al abrir la app con conexión.</p>
 <h4>Créditos</h4><p>Diseño, ilustraciones, sonido y código © 2026 PenTech. Tipografías Cinzel y Alegreya Sans, con licencia SIL Open Font License 1.1.</p>
 <div class="lv">Versión ${APP_VERSION}</div>`;
@@ -393,25 +404,26 @@ document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.pre
 document.addEventListener('dblclick',e=>e.preventDefault());
 /* solo vertical (Android instalado; en iPhone sale el aviso) */
 try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('portrait').catch(()=>{})}catch(e){}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+document.addEventListener('click',e=>{if(e.target.closest('.exp.lock')){e.preventDefault();S.from='setup';S.screen='license';render();return}
+ const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
  if(a==='legal'){legalOpen();return}if(a==='legalx'){legalClose();return}
  if(a==='step'){const k=b.dataset.k;const i=document.querySelector(`input[data-f="${k}"]`);const c=CATS.find(x=>x.k===k);const neg=c&&c.neg;
   let v=(parseInt(i.value)||0)+parseInt(b.dataset.d);if(!neg&&v<0)v=0;i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}));return}
- if(a==='n'){S.n=Math.min(7,Math.max(3,S.n+parseInt(b.dataset.d)));render()}
- else if(a==='start'){if(!LIC&&left()<=0&&!S.counted){S.screen='license';render();return}if(!S.gid)S.gid=Date.now().toString(36);S.cur=0;S.screen='score';render();live()}
- else if(a==='lic'){S.screen='license';render()}
- else if(a==='licback'){S.screen='setup';render()}
+ if(a==='n'){const d=parseInt(b.dataset.d);if(!LIC&&d>0&&S.n>=FREE_MAX){S.from='setup';S.screen='license';render();return}S.n=Math.min(7,Math.max(3,S.n+d));render()}
+ else if(a==='start'){clampFree();if(!S.gid)S.gid=Date.now().toString(36);S.cur=0;S.screen='score';render();live()}
+ else if(a==='lic'){S.from=S.screen;S.screen='license';render()}
+ else if(a==='licback'){S.screen=S.from&&S.from!=='license'?S.from:'setup';render();if(S.screen==='score')live()}
  else if(a==='activate'){const i=document.getElementById('licIn'),er=document.getElementById('licErr');
-  if(validKey(i.value)){lset(LKEY,normKey(i.value));LIC=true;S.screen='setup';render()}
+  if(validKey(i.value)){lset(LKEY,normKey(i.value));LIC=true;if(S.unsaved)saveHist();S.screen=S.from&&S.from!=='license'?S.from:'setup';render()}
   else{er.textContent=normKey(i.value)?'La clave no es válida. Revisa que esté bien escrita.':'Escribe tu clave de licencia.';i.focus()}}
  else if(a==='arch'){S.from=S.screen;S.screen='archive';render()}
  else if(a==='archback'){S.screen=S.from&&S.from!=='archive'?S.from:'setup';render();if(S.screen==='score')live()}
  else if(a==='hview'){const id=b.dataset.id;if(HOPEN.has(id))HOPEN.delete(id);else HOPEN.add(id);const y=scrollY;render();scrollTo(0,y)}
- else if(a==='hdel'){dbl(b,'d'+b.dataset.id,'¿Seguro?',()=>{hsave(hload().filter(x=>x.id!==b.dataset.id));const y=scrollY;render();scrollTo(0,y)})}
- else if(a==='hclear'){dbl(b,'all','¿Seguro? Pulsa de nuevo para vaciar',()=>{hsave([]);render()})}
+ else if(a==='hdel'){if(!LIC)return;dbl(b,'d'+b.dataset.id,'¿Seguro?',()=>{hsave(hload().filter(x=>x.id!==b.dataset.id));const y=scrollY;render();scrollTo(0,y)})}
+ else if(a==='hclear'){if(!LIC)return;dbl(b,'all','¿Seguro? Pulsa de nuevo para vaciar',()=>{hsave([]);render()})}
  else if(a==='tab'){S.cur=parseInt(b.dataset.i);render();live()}
  else if(a==='next'){S.cur=(S.cur+1)%S.n;render();live()}
- else if(a==='results'){if(!S.counted){S.counted=true;if(!LIC){TRIAL++;lset(TKEY,String(TRIAL))}}saveHist();S.screen='results';render()}
+ else if(a==='results'){S.counted=true;saveHist();S.screen='results';render()}
  else if(a==='back'){S.screen='score';render();live()}
  else if(a==='settings'){S.screen='setup';render()}
  else if(a==='reset'){
